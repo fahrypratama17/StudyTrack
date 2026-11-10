@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth} from "../../features/auth/context/AuthContext";
+import { useAuth} from "../hooks/useAuth";
 
 /** Bilah navigasi atas. Menampilkan menu sesuai status login. */
 const Navbar = ()=> {
