@@ -1,68 +1,79 @@
-
 import {
   createContext,
-  useContext,
   useEffect,
   useState,
-  type ReactNode,
 } from "react";
-import api, { TOKEN_KEY} from "../../../service/api";
-import {AuthContextType, AuthProviderProps, User} from "../types/types";
+import { TOKEN_KEY } from "../../../service/api";
+import type {
+  AuthContextType,
+  AuthProviderProps,
+  User
+} from "../types/type";
+import { getCurrentUser} from "../../../shared/repository/auth/query";
+import {
+  loginAction,
+  logoutAction
+} from "../../../shared/repository/auth/action";
 
-const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | null>(
+  null
+);
 
-/**
- * Menyediakan status login ke seluruh aplikasi.
- *
- * Saat pertama dimuat, token yang tersimpan (jika ada)
- * diverifikasi ke /auth/me.
- * Selama proses itu loading bernilai true.
- */
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const token = localStorage.getItem(TOKEN_KEY);
+    let cancelled = false;
 
-    if (!token) {
-      setLoading(false);
-      return;
+    async function initializeAuth(): Promise<void> {
+      const token = localStorage.getItem(TOKEN_KEY);
+
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userData = await getCurrentUser();
+
+        if (!cancelled) {
+          setUser(userData);
+        }
+      } catch {
+        if (!cancelled) {
+          logoutAction();
+          setUser(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
     }
 
-    api
-      .get<{ user: User }>("/auth/me")
-      .then((res) => setUser(res.data.user))
-      .catch(() => {
-        localStorage.removeItem(TOKEN_KEY);
-      })
-      .finally(() => setLoading(false));
+    void initializeAuth();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  /** Menyimpan token dan data pengguna setelah login atau registrasi berhasil. */
   function login(token: string, userData: User): void {
-    localStorage.setItem(TOKEN_KEY, token);
+    loginAction(token);
     setUser(userData);
   }
 
   function logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
+    logoutAction();
     setUser(null);
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error("useAuth harus digunakan di dalam AuthProvider");
-  }
-
-  return context;
 }
