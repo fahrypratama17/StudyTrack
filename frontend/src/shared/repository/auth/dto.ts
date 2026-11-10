@@ -13,3 +13,14 @@ export interface LoginResponseDto {
   token: string;
   user: User;
 }
+
+export interface RegisterRequestDto {
+  nama: string;
+  email: string;
+  password: string;
+}
+
+export interface RegisterResponseDto {
+  token: string;
+  user: User;
+}
