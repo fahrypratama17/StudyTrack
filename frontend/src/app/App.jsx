@@ -1,10 +1,10 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth} from "../features/auth/context/AuthContext.tsx";
-import Login from "../pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import Courses from "./pages/Courses.jsx";
-import Tasks from "./pages/Tasks.jsx";
+import Login from "../features/auth/container/Login.tsx";
+import Register from "../features/auth/container/Register.tsx";
+import Courses from "../features/courses/container/Courses.tsx";
+import Tasks from "../features/tasks/container/Tasks.tsx";
 
 /** Membungkus halaman yang hanya boleh diakses setelah login. */
 function ProtectedRoute({ children }) {
