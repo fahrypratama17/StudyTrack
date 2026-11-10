@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthContext.jsx";
+import { useAuth} from "../../features/auth/context/AuthContext";
 
 /** Bilah navigasi atas. Menampilkan menu sesuai status login. */
-export default function Navbar() {
+const Navbar = ()=> {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ export default function Navbar() {
           <>
             <Link to="/courses">Mata Kuliah</Link>
             <Link to="/tasks">Daftar Tugas</Link>
-            <span>{user.nama}</span>
+            <span>{user.name}</span>
             <button onClick={handleLogout}>Logout</button>
           </>
         ) : (
@@ -33,3 +33,5 @@ export default function Navbar() {
     </div>
   );
 }
+
+export default Navbar;
