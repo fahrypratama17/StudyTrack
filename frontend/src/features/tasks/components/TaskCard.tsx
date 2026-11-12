@@ -1,4 +1,4 @@
-import type { TaskCardProps} from "../types/type";
+import type { TaskCardProps } from "../types/type";
 
 /**
  * Memformat deadline menggunakan locale Indonesia.
@@ -24,7 +24,11 @@ function formatDeadline(deadline: string): string {
  * Komponen card untuk menampilkan data tugas,
  * status, deadline, dan tindakan pengguna.
  */
-export default function TaskCard({task, onToggleStatus, onDelete}: TaskCardProps) {
+export default function TaskCard({
+  task,
+  onToggleStatus,
+  onDelete,
+}: TaskCardProps) {
   const isCompleted = task.status === "selesai";
 
   return (
@@ -32,19 +36,11 @@ export default function TaskCard({task, onToggleStatus, onDelete}: TaskCardProps
       <div>
         <strong>{task.judul}</strong>
 
-        <div className="meta">
-          {task.mata_kuliah}
-        </div>
+        <div className="meta">{task.mata_kuliah}</div>
 
-        <div className="meta">
-          Deadline: {formatDeadline(task.deadline)}
-        </div>
+        <div className="meta">Deadline: {formatDeadline(task.deadline)}</div>
 
-        {task.deskripsi && (
-          <div className="meta">
-            {task.deskripsi}
-          </div>
-        )}
+        {task.deskripsi && <div className="meta">{task.deskripsi}</div>}
       </div>
 
       <div style={{ textAlign: "right" }}>
@@ -64,9 +60,7 @@ export default function TaskCard({task, onToggleStatus, onDelete}: TaskCardProps
             className="btn"
             onClick={() => void onToggleStatus(task)}
           >
-            {isCompleted
-              ? "Tandai Belum"
-              : "Tandai Selesai"}
+            {isCompleted ? "Tandai Belum" : "Tandai Selesai"}
           </button>
 
           <button

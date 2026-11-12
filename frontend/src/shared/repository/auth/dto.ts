@@ -1,4 +1,4 @@
-import type { User} from "../../../features/auth/types/type";
+import type { User } from "../../../features/auth/types/type";
 
 export interface AuthMeResponseDto {
   user: User;

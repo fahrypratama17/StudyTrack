@@ -1,17 +1,16 @@
 import api, { TOKEN_KEY } from "../../../service/api";
 import type {
   LoginRequestDto,
-  LoginResponseDto, RegisterRequestDto, RegisterResponseDto
+  LoginResponseDto,
+  RegisterRequestDto,
+  RegisterResponseDto,
 } from "./dto";
 
 /** Mengirim kredensial login ke backend. */
 export async function authenticate(
-  credentials: LoginRequestDto
+  credentials: LoginRequestDto,
 ): Promise<LoginResponseDto> {
-  const response = await api.post<LoginResponseDto>(
-    "/auth/login",
-    credentials
-  );
+  const response = await api.post<LoginResponseDto>("/auth/login", credentials);
 
   return response.data;
 }
@@ -27,12 +26,9 @@ export function logoutAction(): void {
 }
 
 export async function registerAction(
-  data: RegisterRequestDto
+  data: RegisterRequestDto,
 ): Promise<RegisterResponseDto> {
-  const response = await api.post<RegisterResponseDto>(
-    "/auth/register",
-    data
-  );
+  const response = await api.post<RegisterResponseDto>("/auth/register", data);
 
   return response.data;
 }

@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth} from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 /** Bilah navigasi atas. Menampilkan menu sesuai status login. */
-const Navbar = ()=> {
+const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -13,8 +13,10 @@ const Navbar = ()=> {
   }
 
   return (
-    <div className="navbar">
-      <Link to="/" className="brand">StudyTrack</Link>
+    <div className="flex">
+      <Link to="/" className="font-bold">
+        StudyTrack
+      </Link>
       <nav>
         {user ? (
           <>
@@ -32,6 +34,6 @@ const Navbar = ()=> {
       </nav>
     </div>
   );
-}
+};
 
 export default Navbar;

@@ -1,22 +1,17 @@
-import {
-  useCallback,
-  useEffect,
-  useState,
-  type FormEvent,
-} from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { isAxiosError } from "axios";
 import Navbar from "../../../shared/components/Navbar";
-import TaskCard from "../components/TaskCard"
-import { getTasks} from "../../../shared/repository/tasks/query";
-import { getCourses} from "../../../shared/repository/courses/query";
+import TaskCard from "../components/TaskCard";
+import { getTasks } from "../../../shared/repository/tasks/query";
+import { getCourses } from "../../../shared/repository/courses/query";
 import {
   createTask,
   updateTaskStatus,
-  deleteTask
+  deleteTask,
 } from "../../../shared/repository/tasks/actions";
-import type { Task} from "../types/type";
-import type { Course} from "../../courses/types/type";
-import type { CreateTaskRequestDto} from "../../../shared/repository/tasks/dto";
+import type { Task } from "../types/type";
+import type { Course } from "../../courses/types/type";
+import type { CreateTaskRequestDto } from "../../../shared/repository/tasks/dto";
 
 interface ApiErrorResponse {
   error?: string;
@@ -37,10 +32,7 @@ export default function Tasks() {
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   /** Mengambil pesan error dari Axios. */
-  function getErrorMessage(
-    err: unknown,
-    fallback: string
-  ): string {
+  function getErrorMessage(err: unknown, fallback: string): string {
     if (isAxiosError<ApiErrorResponse>(err)) {
       return err.response?.data?.error ?? fallback;
     }
@@ -76,9 +68,7 @@ export default function Tasks() {
         setCourses(courseList);
       } catch (err: unknown) {
         if (!cancelled) {
-          setError(
-            getErrorMessage(err, "Gagal memuat data.")
-          );
+          setError(getErrorMessage(err, "Gagal memuat data."));
         }
       } finally {
         if (!cancelled) {
@@ -95,9 +85,7 @@ export default function Tasks() {
   }, []);
 
   /** Menambahkan tugas baru. */
-  async function handleSubmit(
-    e: FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
 
     if (submitting) return;
@@ -127,46 +115,35 @@ export default function Tasks() {
 
       await loadData();
     } catch (err: unknown) {
-      setError(
-        getErrorMessage(err, "Gagal menambahkan tugas.")
-      );
+      setError(getErrorMessage(err, "Gagal menambahkan tugas."));
     } finally {
       setSubmitting(false);
     }
   }
 
   /** Mengubah status tugas. */
-  async function handleToggleStatus(
-    task: Task
-  ): Promise<void> {
+  async function handleToggleStatus(task: Task): Promise<void> {
     setError("");
 
-    const newStatus =
-      task.status === "selesai" ? "belum" : "selesai";
+    const newStatus = task.status === "selesai" ? "belum" : "selesai";
 
     try {
       await updateTaskStatus(task.id, newStatus);
       await loadData();
     } catch (err: unknown) {
-      setError(
-        getErrorMessage(err, "Gagal mengubah status tugas.")
-      );
+      setError(getErrorMessage(err, "Gagal mengubah status tugas."));
     }
   }
 
   /** Menghapus tugas. */
-  async function handleDelete(
-    id: Task["id"]
-  ): Promise<void> {
+  async function handleDelete(id: Task["id"]): Promise<void> {
     setError("");
 
     try {
       await deleteTask(id);
       await loadData();
     } catch (err: unknown) {
-      setError(
-        getErrorMessage(err, "Gagal menghapus tugas.")
-      );
+      setError(getErrorMessage(err, "Gagal menghapus tugas."));
     }
   }
 
@@ -186,15 +163,10 @@ export default function Tasks() {
               onChange={(e) => setCourseId(e.target.value)}
               required
             >
-              <option value="">
-                -- Pilih Mata Kuliah --
-              </option>
+              <option value="">-- Pilih Mata Kuliah --</option>
 
               {courses.map((course) => (
-                <option
-                  key={course.id}
-                  value={course.id}
-                >
+                <option key={course.id} value={course.id}>
                   {course.name}
                 </option>
               ))}
@@ -222,13 +194,8 @@ export default function Tasks() {
               required
             />
 
-            <button
-              type="submit"
-              disabled={submitting}
-            >
-              {submitting
-                ? "Menambahkan..."
-                : "Tambah Tugas"}
+            <button type="submit" disabled={submitting}>
+              {submitting ? "Menambahkan..." : "Tambah Tugas"}
             </button>
           </form>
         </div>
@@ -244,10 +211,7 @@ export default function Tasks() {
         ) : (
           <>
             {tasks.length === 0 && !error && (
-              <p>
-                Belum ada tugas. Tambahkan tugas
-                pertama Anda di atas.
-              </p>
+              <p>Belum ada tugas. Tambahkan tugas pertama Anda di atas.</p>
             )}
 
             {tasks.map((task) => (

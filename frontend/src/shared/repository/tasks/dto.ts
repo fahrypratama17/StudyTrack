@@ -1,4 +1,4 @@
-import type { Task, TaskStatus} from "../../../features/tasks/types/type";
+import type { Task, TaskStatus } from "../../../features/tasks/types/type";
 
 export interface TasksResponseDto {
   tasks: Task[];

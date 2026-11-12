@@ -1,11 +1,12 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
 import { AuthProvider } from "../features/auth/context/AuthContext";
-import { useAuth} from "../shared/hooks/useAuth";
+import { useAuth } from "../shared/hooks/useAuth";
 import Login from "../features/auth/container/Login";
 import Register from "../features/auth/container/Register";
 import Courses from "../features/courses/container/Courses";
 import Tasks from "../features/tasks/container/Tasks";
+import Home from "../features/home/container/Home";
 
 /** Props untuk komponen ProtectedRoute. */
 interface ProtectedRouteProps {
@@ -17,16 +18,12 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="container">
-        Memuat...
-      </div>
-    );
+    return <div className="container">Memuat...</div>;
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!user) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return <>{children}</>;
 }
@@ -35,6 +32,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
@@ -56,15 +54,9 @@ function AppRoutes() {
         path="/tasks"
       />
 
-      <Route
-        path="/"
-        element={<Navigate to="/tasks" replace />}
-      />
+      <Route path="/" element={<Navigate to="/tasks" replace />} />
 
-      <Route
-        path="*"
-        element={<Navigate to="/tasks" replace />}
-      />
+      <Route path="*" element={<Navigate to="/tasks" replace />} />
     </Routes>
   );
 }

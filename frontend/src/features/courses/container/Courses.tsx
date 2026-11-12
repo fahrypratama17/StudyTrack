@@ -7,7 +7,7 @@ import type {
   Course,
   CoursesResponse,
   CourseFormData,
-  ApiErrorResponse
+  ApiErrorResponse,
 } from "../types/type";
 
 /** Halaman Mata Kuliah: form tambah dan daftar mata kuliah milik pengguna. */
@@ -31,9 +31,7 @@ export default function Courses() {
     void loadCourses();
   }, []);
 
-  async function handleSubmit(
-    e: FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     setError("");
 
@@ -53,19 +51,14 @@ export default function Courses() {
       await loadCourses();
     } catch (err: unknown) {
       if (isAxiosError<ApiErrorResponse>(err)) {
-        setError(
-          err.response?.data?.error ??
-          "Gagal menambahkan mata kuliah."
-        );
+        setError(err.response?.data?.error ?? "Gagal menambahkan mata kuliah.");
       } else {
         setError("Gagal menambahkan mata kuliah.");
       }
     }
   }
 
-  async function handleDelete(
-    id: Course["id"]
-  ): Promise<void> {
+  async function handleDelete(id: Course["id"]): Promise<void> {
     setError("");
 
     try {
@@ -109,9 +102,7 @@ export default function Courses() {
               onChange={(e) => setDosen(e.target.value)}
             />
 
-            {error && (
-              <p className="error">{error}</p>
-            )}
+            {error && <p className="error">{error}</p>}
 
             <button type="submit">Tambah</button>
           </form>
@@ -119,11 +110,8 @@ export default function Courses() {
 
         {courses.map((c: Course) => (
           <div className="card" key={c.id}>
-            <strong>{c.name}</strong>{" "}
-            {c.kode && <span>({c.kode})</span>}
-
+            <strong>{c.name}</strong> {c.kode && <span>({c.kode})</span>}
             <div className="meta">{c.dosen}</div>
-
             <button
               className="btn"
               style={{ marginTop: 10 }}

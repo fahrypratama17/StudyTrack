@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { isAxiosError } from "axios";
-import { useAuth} from "../../../shared/hooks/useAuth";
-import { registerAction} from "../../../shared/repository/auth/action";
-import type { RegisterRequestDto} from "../../../shared/repository/auth/dto";
+import { useAuth } from "../../../shared/hooks/useAuth";
+import { registerAction } from "../../../shared/repository/auth/action";
+import type { RegisterRequestDto } from "../../../shared/repository/auth/dto";
 
 interface ApiErrorResponse {
   error?: string;
@@ -20,9 +20,7 @@ export default function Register() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  async function handleSubmit(
-    e: FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     if (loading) return;
 
@@ -39,12 +37,9 @@ export default function Register() {
       const { token, user } = await registerAction(formData);
       login(token, user);
       navigate("/tasks", { replace: true });
-
     } catch (err: unknown) {
       if (isAxiosError<ApiErrorResponse>(err)) {
-        setError(
-          err.response?.data?.error ?? "Gagal mendaftar."
-        );
+        setError(err.response?.data?.error ?? "Gagal mendaftar.");
       } else {
         setError("Terjadi kesalahan saat mendaftar.");
       }
@@ -54,7 +49,7 @@ export default function Register() {
   }
 
   return (
-    <div className="container auth-page">
+    <div className="auth-page container">
       <div className="card">
         <h2>Daftar Akun StudyTrack</h2>
 
@@ -99,8 +94,7 @@ export default function Register() {
         </form>
 
         <p className="muted-link">
-          Sudah punya akun?{" "}
-          <Link to="/login">Login di sini</Link>
+          Sudah punya akun? <Link to="/login">Login di sini</Link>
         </p>
       </div>
     </div>

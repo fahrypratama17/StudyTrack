@@ -1,23 +1,13 @@
-import {
-  createContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useEffect, useState } from "react";
 import { TOKEN_KEY } from "../../../service/api";
-import type {
-  AuthContextType,
-  AuthProviderProps,
-  User
-} from "../types/type";
-import { getCurrentUser} from "../../../shared/repository/auth/query";
+import type { AuthContextType, AuthProviderProps, User } from "../types/type";
+import { getCurrentUser } from "../../../shared/repository/auth/query";
 import {
   loginAction,
-  logoutAction
+  logoutAction,
 } from "../../../shared/repository/auth/action";
 
-export const AuthContext = createContext<AuthContextType | null>(
-  null
-);
+export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
@@ -70,9 +60,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, login, logout }}
-    >
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
