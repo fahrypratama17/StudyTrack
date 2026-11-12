@@ -7,12 +7,12 @@ const Hero = () => {
     <section className="bg-secondary-light relative m-8 min-h-[80vh] overflow-hidden rounded-2xl">
       <div className="relative z-10 grid min-h-[80vh] grid-cols-2 items-center gap-8 p-8 pb-28">
         <div className="flex flex-col justify-center gap-8">
-          <h1 className="text-[42px] font-bold">
+          <h1 className="text-primary-text text-[42px] font-bold">
             Kuliah Lebih Teratur, Tugas Lebih{" "}
             <span className="text-primary">Terkelola</span>
           </h1>
 
-          <p className="text-[24px]">
+          <p className="text-secondary-text text-[24px]">
             Kelola mata kuliah, catat tugas, dan pantau deadline dalam satu
             tempat. Bantu aktivitas kuliahmu lebih terorganisir dan produktif
             bersama StudyTrack.

@@ -1,11 +1,15 @@
 import Hero from "../components/Hero";
 import Navbar from "../../../shared/components/Navbar";
+import HowItWorks from "../components/HowItWorks";
 
 const Home = () => {
   return (
     <>
       <Navbar />
-      <Hero />
+      <main>
+        <Hero />
+        <HowItWorks />
+      </main>
     </>
   );
 };
