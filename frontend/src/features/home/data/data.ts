@@ -44,21 +44,29 @@ export const benefits = [
     title: "Kelola Tugas",
     description: "Catat dan kelola seluruh tugas kuliah dengan lebih mudah.",
     icon: ClipboardCheck,
+    bgColor: "#E6F3FB",
+    iconColor: "#0D6684",
   },
   {
     title: "Pantau Deadline",
     description: "Ketahui tugas yang mendekati batas waktu pengumpulan.",
     icon: CalendarClock,
+    bgColor: "#E4F5EF",
+    iconColor: "#168567",
   },
   {
     title: "Atur Mata Kuliah",
     description: "Kelompokkan tugas berdasarkan mata kuliah yang diambil.",
     icon: BookOpen,
+    bgColor: "#F0EBFF",
+    iconColor: "#7964C8",
   },
   {
     title: "Pantau Progres",
     description:
       "Lihat tugas yang telah selesai dan yang masih perlu dikerjakan.",
     icon: ChartNoAxesColumnIncreasing,
+    bgColor: "#FFF0E5",
+    iconColor: "#C77B3B",
   },
 ];

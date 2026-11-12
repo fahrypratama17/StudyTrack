@@ -21,10 +21,11 @@ const Benefits = () => {
           return (
             <article
               key={benefit.title}
+              style={{ backgroundColor: benefit.bgColor }}
               className="group rounded-3xl border border-[#E3ECF1] bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
-              <div className="bg-secondary-light flex h-16 w-16 items-center justify-center rounded-2xl">
-                <Icon size={28} className="text-secondary" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/80">
+                <Icon size={28} style={{ color: benefit.iconColor }} />
               </div>
               <h3 className="text-primary-text mt-8 text-xl font-bold">
                 {benefit.title}
