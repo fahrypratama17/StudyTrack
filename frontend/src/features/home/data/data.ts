@@ -3,6 +3,9 @@ import {
   BookOpen,
   ClipboardList,
   CalendarCheck,
+  ClipboardCheck,
+  CalendarClock,
+  ChartNoAxesColumnIncreasing,
 } from "lucide-react";
 
 export const steps = [
@@ -33,5 +36,29 @@ export const steps = [
     description:
       "Lihat tugas yang mendekati deadline dan tandai tugas yang sudah selesai.",
     icon: CalendarCheck,
+  },
+];
+
+export const benefits = [
+  {
+    title: "Kelola Tugas",
+    description: "Catat dan kelola seluruh tugas kuliah dengan lebih mudah.",
+    icon: ClipboardCheck,
+  },
+  {
+    title: "Pantau Deadline",
+    description: "Ketahui tugas yang mendekati batas waktu pengumpulan.",
+    icon: CalendarClock,
+  },
+  {
+    title: "Atur Mata Kuliah",
+    description: "Kelompokkan tugas berdasarkan mata kuliah yang diambil.",
+    icon: BookOpen,
+  },
+  {
+    title: "Pantau Progres",
+    description:
+      "Lihat tugas yang telah selesai dan yang masih perlu dikerjakan.",
+    icon: ChartNoAxesColumnIncreasing,
   },
 ];
