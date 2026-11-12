@@ -38,10 +38,10 @@ const Navbar = () => {
               <Link to="/" className="hover:text-primary">
                 Beranda
               </Link>
-              <Link to="/login" className="hover:text-primary">
+              <Link to="/#manfaat" className="hover:text-primary">
                 Manfaat
               </Link>
-              <Link to="/register" className="hover:text-primary">
+              <Link to="/#tentang" className="hover:text-primary">
                 Tentang
               </Link>
             </div>
