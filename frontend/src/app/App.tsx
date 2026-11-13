@@ -4,9 +4,10 @@ import { AuthProvider } from "../features/auth/context/AuthContext";
 import { useAuth } from "../shared/hooks/useAuth";
 import Login from "../features/auth/container/Login";
 import Register from "../features/auth/container/Register";
-import Courses from "../features/courses/container/Courses";
 import Tasks from "../features/tasks/container/Tasks";
 import Home from "../features/home/container/Home";
+import DashboardLayout from "../shared/layout/DashboardLayout";
+import Dashboard from "../features/dashboard/container/Dashboard";
 
 /** Props untuk komponen ProtectedRoute. */
 interface ProtectedRouteProps {
@@ -39,24 +40,15 @@ function AppRoutes() {
       <Route
         element={
           <ProtectedRoute>
-            <Courses />
+            <DashboardLayout />
           </ProtectedRoute>
         }
-        path="/courses"
-      />
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Route>
 
-      <Route
-        element={
-          <ProtectedRoute>
-            <Tasks />
-          </ProtectedRoute>
-        }
-        path="/tasks"
-      />
-
-      <Route path="/" element={<Navigate to="/tasks" replace />} />
-
-      <Route path="*" element={<Navigate to="/tasks" replace />} />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }

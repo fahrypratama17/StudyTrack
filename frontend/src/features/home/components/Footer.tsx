@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <footer
       id="tentang"
-      className="bg-gradient relative overflow-hidden rounded-3xl"
+      className="bg-gradient relative overflow-hidden rounded-t-3xl"
     >
       <div className="relative z-10 grid grid-cols-1 gap-12 px-8 pt-14 pb-36 md:grid-cols-2 lg:px-16">
         <div className="flex flex-col items-start">
