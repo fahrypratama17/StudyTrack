@@ -7,6 +7,7 @@ import Register from "../features/auth/container/Register";
 import Tasks from "../features/tasks/container/Tasks";
 import Home from "../features/home/container/Home";
 import DashboardLayout from "../shared/layout/DashboardLayout";
+import Dashboard from "../features/dashboard/container/Dashboard";
 
 /** Props untuk komponen ProtectedRoute. */
 interface ProtectedRouteProps {
@@ -42,7 +43,9 @@ function AppRoutes() {
             <DashboardLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
