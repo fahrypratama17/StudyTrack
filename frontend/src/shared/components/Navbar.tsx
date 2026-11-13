@@ -1,54 +1,10 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useAuth } from "../hooks/useAuth";
+import { useNavbar } from "../hooks/useNavbar";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    setMenuOpen(false);
-
-    if (!location.hash) return;
-
-    const id = decodeURIComponent(location.hash.slice(1));
-
-    const frame = requestAnimationFrame(() => {
-      document.getElementById(id)?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-
-    return () => cancelAnimationFrame(frame);
-  }, [location.pathname, location.hash]);
-
-  function handleLogout() {
-    logout();
-    setMenuOpen(false);
-    navigate("/login");
-  }
+  const { user, scrolled, menuOpen, toggleMenu, closeMenu, handleLogout } =
+    useNavbar();
 
   return (
     <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`}>
@@ -141,7 +97,7 @@ const Navbar = () => {
         type="button"
         aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
         aria-expanded={menuOpen}
-        onClick={() => setMenuOpen(!menuOpen)}
+        onClick={toggleMenu}
         className="text-primary ml-auto lg:hidden"
       >
         {menuOpen ? <X size={26} /> : <Menu size={26} />}
@@ -166,15 +122,14 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/">Beranda</Link>
+              <Link to="/#beranda">Beranda</Link>
+              <Link to="/#cara-kerja">Cara Kerja</Link>
               <Link to="/#manfaat">Manfaat</Link>
-              <Link to="/#carakerja">Cara Kerja</Link>
-              <Link to="/login">Masuk</Link>
               <Link
-                to="/register"
+                to="/login"
                 className="bg-primary rounded-xl px-5 py-3 text-center text-white"
               >
-                Mulai Gratis
+                Masuk
               </Link>
             </>
           )}
