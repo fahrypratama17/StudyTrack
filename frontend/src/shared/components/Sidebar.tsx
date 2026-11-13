@@ -1,7 +1,6 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { LayoutDashboard, BookOpen, ClipboardList, LogOut } from "lucide-react";
-
-import { useAuth } from "../hooks/useAuth";
+import { useSidebar } from "../hooks/useSidebar";
 
 interface SidebarProps {
   className?: string;
@@ -27,14 +26,7 @@ const navigation = [
 ];
 
 const Sidebar = ({ className = "", onNavigate }: SidebarProps) => {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    onNavigate?.();
-    navigate("/login", { replace: true });
-  };
+  const { handleNavigate, handleLogout } = useSidebar(onNavigate);
 
   return (
     <aside
@@ -42,7 +34,7 @@ const Sidebar = ({ className = "", onNavigate }: SidebarProps) => {
     >
       <NavLink
         to="/dashboard"
-        onClick={onNavigate}
+        onClick={handleNavigate}
         className="mb-12 flex items-center gap-3 px-3"
       >
         <img
