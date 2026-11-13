@@ -4,7 +4,7 @@ import WaveBackground from "./WaveBackground";
 
 const Hero = () => {
   return (
-    <section className="bg-secondary-light relative m-8 min-h-[80vh] overflow-hidden rounded-2xl">
+    <section className="relative m-8 min-h-[80vh] overflow-hidden rounded-2xl bg-linear-to-r from-[#EAF8FD] via-[#F8FCFF] to-[#EAF8FD]">
       <div className="relative z-10 grid min-h-[80vh] grid-cols-2 items-center gap-8 p-8 pb-28">
         <div className="flex flex-col justify-center gap-8">
           <h1 className="text-primary-text text-[42px] font-bold">
@@ -21,16 +21,23 @@ const Hero = () => {
           <div className="flex w-[70%] gap-4 text-[18px]">
             <Link
               to="/register"
-              className="bg-primary flex flex-1 items-center justify-center gap-2 rounded-2xl py-4 text-white"
+              className="group bg-primary hover:bg-secondary flex flex-1 items-center justify-center gap-2 rounded-2xl py-4 text-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl active:translate-y-0 active:scale-[0.98]"
             >
-              Mulai Gratis <ArrowRight size={20} />
+              Mulai Gratis{" "}
+              <ArrowRight
+                size={20}
+                className="transition-transform duration-300 group-hover:translate-x-1.5"
+              />
             </Link>
 
             <a
               href="#carakerja"
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-white py-4"
+              className="group border-primary/10 text-primary-text hover:border-primary/30 hover:bg-secondary-light flex flex-1 items-center justify-center gap-2 rounded-2xl border bg-white py-4 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.98]"
             >
-              <CirclePlay size={20} />
+              <CirclePlay
+                size={20}
+                className="text-primary transition-transform duration-300 group-hover:scale-110"
+              />
               Lihat Cara Kerjanya
             </a>
           </div>
