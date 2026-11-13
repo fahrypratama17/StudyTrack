@@ -3,7 +3,6 @@ import {
   ClipboardList,
   ClockAlert,
   AlertTriangle,
-  CalendarDays,
 } from "lucide-react";
 import SummaryCard from "../components/SummaryCard";
 import DashboardWave from "../components/DashboardWave";
@@ -12,35 +11,14 @@ import { useDashboard } from "../hooks/useDashboard";
 import TaskPriority from "../components/TaskPriority";
 import TaskProgress from "../components/TaskProgress";
 import TaskList from "../components/TaskList";
+import DashboardHeader from "../components/DashboardHeader";
 
 export default function Dashboard() {
   const { summary } = useDashboard();
 
-  const today = new Intl.DateTimeFormat("id-ID", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date());
-
   return (
     <div className="flex flex-col gap-8">
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-primary-text text-3xl font-bold md:text-4xl">
-            Dashboard
-          </h1>
-
-          <p className="text-secondary-text mt-2">
-            Pantau seluruh aktivitas perkuliahanmu dalam satu tempat.
-          </p>
-        </div>
-
-        <div className="text-secondary-text flex items-center gap-2 rounded-xl border border-white/70 bg-white px-4 py-3 text-sm">
-          <CalendarDays size={20} className="text-primary" />
-          {today}
-        </div>
-      </header>
+      <DashboardHeader />
 
       <section className="from-primary to-secondary relative isolate overflow-hidden rounded-2xl bg-linear-to-r px-7 py-9 text-white md:px-10 md:py-12">
         <DashboardWave />
