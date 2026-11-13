@@ -25,7 +25,7 @@ const AuthField = forwardRef<HTMLInputElement, AuthFieldProps>(
         </label>
 
         <div
-          className={`focus-within:ring-primary/10 flex items-center gap-3 rounded-xl border bg-white px-4 transition-all duration-200 focus-within:ring-2 ${
+          className={`focus-within:ring-primary/10 flex items-center gap-3 rounded-2xl border bg-white px-4 transition-all duration-200 focus-within:ring-2 ${
             error
               ? "border-red-400 focus-within:border-red-400"
               : "focus-within:border-primary border-slate-200"
@@ -45,7 +45,7 @@ const AuthField = forwardRef<HTMLInputElement, AuthFieldProps>(
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="text-secondary-text hover:text-primary shrink-0 transition-colors"
+              className="text-secondary-text hover:text-primary shrink-0 cursor-pointer transition-colors"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>

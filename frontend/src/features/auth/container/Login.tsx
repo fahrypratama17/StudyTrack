@@ -15,8 +15,8 @@ interface ApiErrorResponse {
 }
 
 export default function Login() {
-  const [email, setEmail] = useState<string>("demo@studytrack.test");
-  const [password, setPassword] = useState<string>("demo1234");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -83,7 +83,7 @@ export default function Login() {
         {error && (
           <p
             role="alert"
-            className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600"
+            className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600"
           >
             {error}
           </p>
@@ -92,7 +92,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="group bg-primary hover:bg-secondary mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+          className="group bg-primary hover:bg-secondary mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
         >
           {loading ? "Memproses..." : "Masuk"}
 
