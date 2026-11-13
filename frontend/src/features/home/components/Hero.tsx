@@ -4,7 +4,7 @@ import WaveBackground from "./WaveBackground";
 
 const Hero = () => {
   return (
-    <section className="relative m-8 min-h-[80vh] overflow-hidden rounded-2xl bg-linear-to-r from-[#EAF8FD] via-[#F8FCFF] to-[#EAF8FD]">
+    <section className="bg-gradient relative m-8 min-h-[80vh] overflow-hidden rounded-2xl">
       <div className="relative z-10 grid min-h-[80vh] grid-cols-2 items-center gap-8 p-8 pb-28">
         <div className="flex flex-col justify-center gap-8">
           <h1 className="text-primary-text text-[42px] font-bold">
