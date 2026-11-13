@@ -8,32 +8,11 @@ import {
   CheckCircle2,
   CalendarDays,
 } from "lucide-react";
-
 import SummaryCard from "../components/SummaryCard";
-import { useDashboard } from "../hooks/useDashboard";
-import type { TaskPriority } from "../types/type";
 import DashboardWave from "../components/DashboardWave";
 import DashboardBanner from "../components/DashboardBanner";
-
-const statusStyles: Record<TaskPriority, { label: string; className: string }> =
-  {
-    mendesak: {
-      label: "Mendesak",
-      className: "bg-orange-100 text-orange-700",
-    },
-    terlambat: {
-      label: "Terlambat",
-      className: "bg-red-100 text-red-700",
-    },
-    selesai: {
-      label: "Selesai",
-      className: "bg-green-100 text-green-700",
-    },
-    normal: {
-      label: "Belum",
-      className: "bg-yellow-100 text-yellow-700",
-    },
-  };
+import { useDashboard } from "../hooks/useDashboard";
+import { statusStyles } from "../types/type";
 
 function formatDeadline(value: string) {
   const date = new Date(value);
