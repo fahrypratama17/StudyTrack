@@ -37,7 +37,6 @@ const getTaskPriority = (task: DashboardTask, now: number): TaskPriority => {
 export const useDashboard = () => {
   const [now, setNow] = useState(() => Date.now());
 
-  // Update kategori deadline setiap menit
   useEffect(() => {
     const interval = window.setInterval(() => {
       setNow(Date.now());
