@@ -11,7 +11,7 @@ interface AuthLayoutProps {
 
 const AuthLayout = ({ title, description, children }: AuthLayoutProps) => {
   return (
-    <main className="bg-gradient relative isolate flex min-h-screen items-center justify-center overflow-hidden px-4">
+    <main className="bg-gradient relative isolate flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
       <AuthWave />
 
       <div className="shadow-primary/10 relative z-10 w-full max-w-115 rounded-3xl border border-white/80 bg-white/95 p-7 shadow-xl backdrop-blur-xl sm:p-10">
