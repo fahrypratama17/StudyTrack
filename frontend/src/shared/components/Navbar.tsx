@@ -1,60 +1,134 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 
-/** Bilah navigasi atas. Menampilkan menu sesuai status login. */
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+
+    if (!location.hash) return;
+
+    const id = decodeURIComponent(location.hash.slice(1));
+
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [location.pathname, location.hash]);
 
   function handleLogout() {
     logout();
+    setMenuOpen(false);
     navigate("/login");
   }
 
   return (
-    <header className="border-b-primary/20 text-primary-text flex w-full border-b bg-white p-4 px-8 shadow-sm">
-      <div className="flex w-[70%] items-center justify-start gap-2">
-        <img src="/logo.webp" alt="logo" width={40} />
-        <p className="text-primary-text text-[32px] font-bold">
+    <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`}>
+      <Link to="/" className="flex shrink-0 items-center gap-2">
+        <img
+          src="/logo.webp"
+          alt="Logo StudyTrack"
+          className="h-10 w-10 object-contain"
+        />
+
+        <p className="text-primary-text text-2xl font-bold">
           Study<span className="text-primary">Track</span>
         </p>
-      </div>
-      <nav className="flex w-full items-center justify-between text-xl">
+      </Link>
+
+      <nav className="hidden flex-1 items-center justify-between pl-12 text-base lg:flex">
         {user ? (
           <>
-            <Link to="/courses" className="hover:text-primary">
-              Mata Kuliah
-            </Link>
-            <Link to="/tasks" className="hover:text-primary">
-              Daftar Tugas
-            </Link>
-            <span>{user.name}</span>
-            <button onClick={handleLogout}>Logout</button>
+            <div className="flex items-center gap-8">
+              <Link
+                to="/courses"
+                className="hover:text-secondary transition-colors"
+              >
+                Mata Kuliah
+              </Link>
+
+              <Link
+                to="/tasks"
+                className="hover:text-secondary transition-colors"
+              >
+                Daftar Tugas
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-5">
+              <span className="text-secondary-text">{user.name}</span>
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="bg-primary hover:bg-secondary rounded-full px-6 py-2.5 font-medium text-white transition-colors"
+              >
+                Keluar
+              </button>
+            </div>
           </>
         ) : (
           <>
-            <div className="flex gap-12">
-              <Link to="/" className="hover:text-primary">
+            <div className="mx-auto flex items-center gap-9">
+              <Link
+                to="/#beranda"
+                className="hover:text-secondary transition-colors"
+              >
                 Beranda
               </Link>
-              <Link to="/#manfaat" className="hover:text-primary">
+              <Link
+                to="/#cara-kerja"
+                className="hover:text-secondary transition-colors"
+              >
+                Cara Kerja
+              </Link>
+              <Link
+                to="/#manfaat"
+                className="hover:text-secondary transition-colors"
+              >
                 Manfaat
               </Link>
-              <Link to="/#tentang" className="hover:text-primary">
-                Tentang
-              </Link>
             </div>
-            <div className="flex w-full max-w-60 gap-4">
+
+            <div className="flex shrink-0 items-center gap-3">
               <Link
                 to="/login"
-                className="hover:text-primary border-primary hover:bg-primary flex-1 rounded-2xl border py-2 text-center hover:text-white"
+                className="border-primary text-primary hover:bg-secondary-light rounded-full border px-6 py-2.5 font-medium transition-all duration-300"
               >
                 Masuk
               </Link>
+
               <Link
                 to="/register"
-                className="bg-primary border-primary hover:text-primary flex-1 rounded-2xl border py-2 text-center text-white hover:bg-white"
+                className="bg-primary hover:bg-secondary rounded-full px-7 py-2.5 font-medium text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
               >
                 Mulai
               </Link>
@@ -62,6 +136,50 @@ const Navbar = () => {
           </>
         )}
       </nav>
+
+      <button
+        type="button"
+        aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="text-primary ml-auto lg:hidden"
+      >
+        {menuOpen ? <X size={26} /> : <Menu size={26} />}
+      </button>
+
+      {menuOpen && (
+        <nav
+          aria-label="Navigasi mobile"
+          className="border-primary/10 absolute top-[calc(100%+12px)] right-0 left-0 flex flex-col gap-4 rounded-2xl border bg-white p-6 shadow-xl lg:hidden"
+        >
+          {user ? (
+            <>
+              <Link to="/courses">Mata Kuliah</Link>
+              <Link to="/tasks">Daftar Tugas</Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="text-left"
+              >
+                Keluar
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/">Beranda</Link>
+              <Link to="/#manfaat">Manfaat</Link>
+              <Link to="/#carakerja">Cara Kerja</Link>
+              <Link to="/login">Masuk</Link>
+              <Link
+                to="/register"
+                className="bg-primary rounded-xl px-5 py-3 text-center text-white"
+              >
+                Mulai Gratis
+              </Link>
+            </>
+          )}
+        </nav>
+      )}
     </header>
   );
 };

@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+}
+
 @theme {
   --color-primary: #1F506D;
   --color-secondary: #0D6684;
@@ -15,4 +20,42 @@
     #F8FCFF,
     #EAF8FD
   );
+}
+
+@layer components {
+  .navbar {
+    @apply fixed inset-x-0 top-0 z-50 mx-auto
+    flex items-center
+    text-primary-text
+    transition-all duration-300 ease-in-out;
+  }
+
+  .navbar.not-scrolled {
+    @apply w-full
+    border-b border-primary/15
+    bg-white
+    px-8 py-4
+    shadow-sm;
+  }
+
+  .navbar.scrolled {
+    @apply top-5
+    w-[85%]
+    rounded-full
+    border border-primary/20
+    bg-white/90
+    px-8 py-3
+    shadow-lg
+    backdrop-blur-xl;
+  }
+
+  @media (max-width: 768px) {
+    .navbar.scrolled {
+      @apply top-3 w-[94%] rounded-2xl px-5 py-3;
+    }
+
+    .navbar.not-scrolled {
+      @apply px-5 py-4;
+    }
+  }
 }

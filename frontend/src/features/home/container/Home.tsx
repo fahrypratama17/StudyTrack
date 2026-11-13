@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <main>
+      <main className="pt-24">
         <Hero />
         <HowItWorks />
         <Benefits />
