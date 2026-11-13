@@ -13,6 +13,7 @@ import SummaryCard from "../components/SummaryCard";
 import { useDashboard } from "../hooks/useDashboard";
 import type { TaskPriority } from "../types/type";
 import DashboardWave from "../components/DashboardWave";
+import DashboardBanner from "../components/DashboardBanner";
 
 const statusStyles: Record<TaskPriority, { label: string; className: string }> =
   {
@@ -73,50 +74,15 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="text-secondary-text flex items-center gap-2 rounded-xl border border-[#E3ECF1] bg-white px-4 py-3 text-sm">
-          <CalendarDays size={19} className="text-primary" />
+        <div className="text-secondary-text flex items-center gap-2 rounded-xl border border-white/70 bg-white px-4 py-3 text-sm">
+          <CalendarDays size={20} className="text-primary" />
           {today}
         </div>
       </header>
 
-      <section className="relative isolate overflow-hidden rounded-3xl bg-linear-to-r from-[#1F506D] to-[#0D6684] px-7 py-9 text-white md:px-10 md:py-12">
+      <section className="from-primary to-secondary relative isolate overflow-hidden rounded-2xl bg-linear-to-r px-7 py-9 text-white md:px-10 md:py-12">
         <DashboardWave />
-
-        <div className="relative z-10 max-w-2xl">
-          <p className="text-sm font-medium text-white/75">
-            Selamat datang di StudyTrack
-          </p>
-
-          <h2 className="mt-3 text-2xl font-bold md:text-3xl">
-            Siap Menyelesaikan Tugas Hari Ini?
-          </h2>
-
-          <p className="mt-3 max-w-xl leading-relaxed text-white/80">
-            Kelola mata kuliah, pantau deadline, dan pastikan setiap tugas
-            terselesaikan tepat waktu.
-          </p>
-
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link
-              to="/tasks"
-              className="group text-primary inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
-            >
-              Tambah Tugas
-              <ArrowRight
-                size={17}
-                className="transition-transform group-hover:translate-x-1"
-              />
-            </Link>
-
-            <Link
-              to="/courses"
-              className="inline-flex items-center gap-2 rounded-xl border border-white/50 px-5 py-3 font-medium text-white transition-colors hover:bg-white/10"
-            >
-              <BookOpen size={19} />
-              Mata Kuliah
-            </Link>
-          </div>
-        </div>
+        <DashboardBanner />
       </section>
 
       <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
