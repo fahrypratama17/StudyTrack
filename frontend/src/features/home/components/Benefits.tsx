@@ -22,7 +22,7 @@ const Benefits = () => {
             <article
               key={benefit.title}
               style={{ backgroundColor: benefit.bgColor }}
-              className="group rounded-3xl border border-[#E3ECF1] bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className="group rounded-2xl border border-[#E3ECF1] bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/80">
                 <Icon size={28} style={{ color: benefit.iconColor }} />

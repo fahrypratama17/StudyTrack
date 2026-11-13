@@ -21,7 +21,7 @@ const HowItWorks = () => {
           return (
             <article
               key={step.id}
-              className="group rounded-3xl border border-[#E3ECF1] bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className="group rounded-2xl border border-[#E3ECF1] bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
               <div className="flex items-center justify-between">
                 <div className="bg-secondary-light rounded-2xl p-4">
