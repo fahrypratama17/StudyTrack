@@ -15,7 +15,6 @@ const DashboardLayout = () => {
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
-            aria-label="Tutup sidebar"
             className="absolute inset-0 bg-black/40"
             onClick={() => setSidebarOpen(false)}
           />
@@ -33,8 +32,6 @@ const DashboardLayout = () => {
 
           <button
             type="button"
-            aria-label={sidebarOpen ? "Tutup sidebar" : "Buka sidebar"}
-            aria-expanded={sidebarOpen}
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-primary"
           >

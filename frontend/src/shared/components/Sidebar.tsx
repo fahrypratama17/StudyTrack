@@ -48,10 +48,7 @@ const Sidebar = ({ className = "", onNavigate }: SidebarProps) => {
         </span>
       </NavLink>
 
-      <nav
-        aria-label="Navigasi dashboard"
-        className="flex flex-1 flex-col gap-2"
-      >
+      <nav className="flex flex-1 flex-col gap-2">
         <p className="text-secondary-text mb-3 px-4 text-xs font-semibold tracking-widest uppercase">
           Menu Utama
         </p>
