@@ -5,7 +5,6 @@ const CTAWave = () => {
         viewBox="0 0 1200 400"
         preserveAspectRatio="none"
         className="pointer-events-none absolute inset-0 z-0 h-full w-full"
-        aria-hidden="true"
       >
         <path
           d="

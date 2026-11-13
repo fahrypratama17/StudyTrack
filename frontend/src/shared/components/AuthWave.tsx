@@ -1,9 +1,6 @@
 const AuthWave = () => {
   return (
-    <div
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-0"
-      aria-hidden="true"
-    >
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0">
       <svg
         viewBox="0 0 1440 300"
         preserveAspectRatio="none"
