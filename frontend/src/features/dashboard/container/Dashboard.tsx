@@ -12,6 +12,7 @@ import {
 import SummaryCard from "../components/SummaryCard";
 import { useDashboard } from "../hooks/useDashboard";
 import type { TaskPriority } from "../types/type";
+import DashboardWave from "../components/DashboardWave";
 
 const statusStyles: Record<TaskPriority, { label: string; className: string }> =
   {
@@ -79,21 +80,7 @@ export default function Dashboard() {
       </header>
 
       <section className="relative isolate overflow-hidden rounded-3xl bg-linear-to-r from-[#1F506D] to-[#0D6684] px-7 py-9 text-white md:px-10 md:py-12">
-        <svg
-          viewBox="0 0 500 200"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-          className="pointer-events-none absolute right-0 bottom-0 -z-10 h-full w-[55%] opacity-20"
-        >
-          <path
-            d="M0 170 C90 70 180 190 290 90 C370 15 430 100 500 25 L500 200 L0 200 Z"
-            fill="#FFFFFF"
-          />
-          <path
-            d="M0 190 C110 130 220 200 340 130 C420 75 470 140 500 110 L500 200 L0 200 Z"
-            fill="#BDE0F0"
-          />
-        </svg>
+        <DashboardWave />
 
         <div className="relative z-10 max-w-2xl">
           <p className="text-sm font-medium text-white/75">
@@ -114,7 +101,7 @@ export default function Dashboard() {
               to="/tasks"
               className="group text-primary inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
             >
-              = Tambah Tugas
+              Tambah Tugas
               <ArrowRight
                 size={17}
                 className="transition-transform group-hover:translate-x-1"
