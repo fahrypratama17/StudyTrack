@@ -5,7 +5,7 @@ import CTAWave from "./CTAWave";
 const CTA = () => {
   return (
     <section id="cta" className="mx-auto max-w-375 px-8 py-16">
-      <div className="relative isolate flex h-[70vh] items-center justify-center overflow-hidden rounded-3xl bg-linear-to-r from-[#EAF8FD] via-[#F8FCFF] to-[#EAF8FD] px-6 py-14 text-center">
+      <div className="bg-gradient relative isolate flex h-[70vh] items-center justify-center overflow-hidden rounded-3xl px-6 py-14 text-center">
         <CTAWave />
 
         <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-4">

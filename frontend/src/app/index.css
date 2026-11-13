@@ -8,4 +8,11 @@
   --color-secondary-text: #5A6574;
   --color-surface: #FAFBFD;
   --color-background: #FFFFFF;
+
+  --background-image-gradient: linear-gradient(
+    to right,
+    #EAF8FD,
+    #F8FCFF,
+    #EAF8FD
+  );
 }
