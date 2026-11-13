@@ -1,9 +1,6 @@
 const WaveBackground = () => {
   return (
-    <div
-      className="pointer-events-none absolute bottom-0 left-0 z-0 w-full"
-      aria-hidden="true"
-    >
+    <div className="pointer-events-none absolute bottom-0 left-0 z-0 w-full">
       <svg
         viewBox="0 0 1440 160"
         preserveAspectRatio="none"

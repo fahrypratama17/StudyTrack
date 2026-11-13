@@ -1,102 +1,99 @@
-import { useState, type FormEvent } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { isAxiosError } from "axios";
-import { useAuth } from "../../../shared/hooks/useAuth";
-import { registerAction } from "../../../shared/repository/auth/action";
-import type { RegisterRequestDto } from "../../../shared/repository/auth/dto";
+import { Link } from "react-router-dom";
+import { ArrowRight, LockKeyhole, Mail, UserRound } from "lucide-react";
+import AuthLayout from "../../../shared/layout/AuthLayout";
+import AuthField from "../components/AuthField";
+import { useRegister } from "../hooks/useRegister";
 
-interface ApiErrorResponse {
-  error?: string;
-}
-
-/** Halaman pendaftaran akun baru. */
 export default function Register() {
-  const [nama, setNama] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const { login } = useAuth();
-  const navigate = useNavigate();
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
-    e.preventDefault();
-    if (loading) return;
-
-    setError("");
-    setLoading(true);
-
-    const formData: RegisterRequestDto = {
-      nama: nama.trim(),
-      email: email.trim(),
-      password,
-    };
-
-    try {
-      const { token, user } = await registerAction(formData);
-      login(token, user);
-      navigate("/tasks", { replace: true });
-    } catch (err: unknown) {
-      if (isAxiosError<ApiErrorResponse>(err)) {
-        setError(err.response?.data?.error ?? "Gagal mendaftar.");
-      } else {
-        setError("Terjadi kesalahan saat mendaftar.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+  const {
+    nama,
+    setNama,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+    loading,
+    handleSubmit,
+  } = useRegister();
 
   return (
-    <div className="auth-page container">
-      <div className="card">
-        <h2>Daftar Akun StudyTrack</h2>
+    <AuthLayout
+      title="Buat Akun StudyTrack"
+      description="Daftar untuk mulai mengelola tugas dan aktivitas kuliahmu dengan lebih mudah."
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <AuthField
+          id="register-nama"
+          label="Nama Lengkap"
+          icon={UserRound}
+          type="text"
+          autoComplete="name"
+          placeholder="Masukkan nama lengkap"
+          value={nama}
+          onChange={(e) => setNama(e.target.value)}
+          required
+        />
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Nama Lengkap"
-            value={nama}
-            onChange={(e) => setNama(e.target.value)}
-            autoComplete="name"
-            required
-          />
+        <AuthField
+          id="register-email"
+          label="Email"
+          icon={Mail}
+          type="email"
+          autoComplete="email"
+          placeholder="Masukkan email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            required
-          />
+        <AuthField
+          id="register-password"
+          label="Kata Sandi"
+          icon={LockKeyhole}
+          type="password"
+          autoComplete="new-password"
+          placeholder="Minimal 8 karakter"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          minLength={8}
+          required
+        />
 
-          <input
-            type="password"
-            placeholder="Password (minimal 6 karakter)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-            minLength={6}
-            required
-          />
+        {error && (
+          <p
+            role="alert"
+            className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600"
+          >
+            {error}
+          </p>
+        )}
 
-          {error && (
-            <p className="error" role="alert">
-              {error}
-            </p>
+        <button
+          type="submit"
+          disabled={loading}
+          className="group bg-primary hover:bg-secondary mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl py-3.5 font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+        >
+          {loading ? "Mendaftarkan..." : "Daftar Sekarang"}
+
+          {!loading && (
+            <ArrowRight
+              size={20}
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
           )}
+        </button>
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Mendaftarkan..." : "Daftar"}
-          </button>
-        </form>
-
-        <p className="muted-link">
-          Sudah punya akun? <Link to="/login">Login di sini</Link>
+        <p className="text-secondary-text mt-3 text-center text-sm">
+          Sudah punya akun?{" "}
+          <Link
+            to="/login"
+            className="text-primary hover:text-secondary font-semibold transition-colors"
+          >
+            Masuk
+          </Link>
         </p>
-      </div>
-    </div>
+      </form>
+    </AuthLayout>
   );
 }

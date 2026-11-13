@@ -95,8 +95,6 @@ const Navbar = () => {
 
       <button
         type="button"
-        aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
-        aria-expanded={menuOpen}
         onClick={toggleMenu}
         className="text-primary ml-auto lg:hidden"
       >
@@ -104,10 +102,7 @@ const Navbar = () => {
       </button>
 
       {menuOpen && (
-        <nav
-          aria-label="Navigasi mobile"
-          className="border-primary/10 absolute top-[calc(100%+12px)] right-0 left-0 flex flex-col gap-4 rounded-2xl border bg-white p-6 shadow-xl lg:hidden"
-        >
+        <nav className="border-primary/10 absolute top-[calc(100%+12px)] right-0 left-0 flex flex-col gap-4 rounded-2xl border bg-white p-6 shadow-xl lg:hidden">
           {user ? (
             <>
               <Link to="/courses">Mata Kuliah</Link>

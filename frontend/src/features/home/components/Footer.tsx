@@ -35,7 +35,7 @@ const Footer = () => {
         </div>
 
         <div className="flex flex-col md:items-end">
-          <nav aria-label="Navigasi footer" className="flex flex-col gap-5">
+          <nav className="flex flex-col gap-5">
             <h3 className="text-primary-text text-xl font-bold">Navigasi</h3>
             <div className="flex flex-col gap-y-5">
               {navigation.map((item) => (
