@@ -10,7 +10,6 @@ export default function Courses() {
   const {
     filteredCourses,
     search,
-    setSearch,
     loading,
     saving,
     deletingId,
