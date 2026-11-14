@@ -1,9 +1,18 @@
 import { BookOpen } from "lucide-react";
-import { useCoursePage } from "../hooks/useCoursePage";
 
-const CourseEmptyState = () => {
-  const { search, error, openAddForm, loadCourses } = useCoursePage();
+interface CourseEmptyStateProps {
+  search: string;
+  error: string | null;
+  onAdd: () => void;
+  onRetry: () => void;
+}
 
+const CourseEmptyState = ({
+  search,
+  error,
+  onAdd,
+  onRetry,
+}: CourseEmptyStateProps) => {
   return (
     <section className="flex flex-col items-center justify-center rounded-3xl border border-[#E3ECF1] bg-white px-6 py-16 text-center">
       <div className="bg-secondary-light flex h-20 w-20 items-center justify-center rounded-3xl">
@@ -23,7 +32,7 @@ const CourseEmptyState = () => {
       {!search && (
         <button
           type="button"
-          onClick={openAddForm}
+          onClick={onAdd}
           className="bg-primary hover:bg-secondary mt-6 cursor-pointer rounded-2xl px-6 py-3 font-semibold text-white"
         >
           Tambah Mata Kuliah
@@ -33,7 +42,7 @@ const CourseEmptyState = () => {
       {error && (
         <button
           type="button"
-          onClick={() => void loadCourses()}
+          onClick={onRetry}
           className="text-primary mt-4 text-sm font-medium underline"
         >
           Coba muat ulang
