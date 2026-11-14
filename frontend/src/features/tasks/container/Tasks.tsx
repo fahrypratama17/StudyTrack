@@ -12,6 +12,7 @@ import TaskCard from "../components/TaskCard";
 import TaskForm from "../components/TaskForm";
 import { useTaskPage } from "../hooks/useTaskPage";
 import type { TaskFilter } from "../types/type";
+import TaskBanner from "../components/TaskBanner";
 
 const filters: { value: TaskFilter; label: string }[] = [
   { value: "semua", label: "Semua" },
@@ -70,60 +71,7 @@ export default function Tasks() {
         </button>
       </header>
 
-      <section className="relative isolate overflow-hidden rounded-3xl border border-[#DCEAF2] bg-white px-6 py-6 shadow-sm md:px-8">
-        <svg
-          viewBox="0 0 500 200"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-          className="pointer-events-none absolute right-0 bottom-0 -z-10 h-full w-[55%] opacity-35"
-        >
-          <path
-            d="M0 165 C100 60 190 195 300 95 C380 20 440 110 500 35 L500 200 L0 200 Z"
-            fill="#D3EAF7"
-          />
-
-          <path
-            d="M0 190 C110 120 220 210 340 145 C425 85 470 160 500 115 L500 200 L0 200 Z"
-            fill="#A9D8EC"
-          />
-        </svg>
-
-        <div className="relative z-10 flex flex-col justify-between gap-5 md:flex-row md:items-center">
-          <div className="max-w-xl">
-            <div className="flex items-center gap-3">
-              <div className="bg-secondary-light flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl">
-                <ClockAlert size={23} className="text-secondary" />
-              </div>
-
-              <h2 className="text-primary-text text-lg font-bold md:text-xl">
-                Perhatikan Deadline Tugasmu
-              </h2>
-            </div>
-
-            <p className="text-secondary-text mt-3 text-sm leading-relaxed">
-              Tugas dengan deadline kurang dari 24 jam ditandai sebagai
-              mendesak. Tugas yang melewati batas waktu ditandai sebagai
-              terlambat.
-            </p>
-          </div>
-
-          <div className="flex shrink-0 flex-wrap gap-3">
-            <div className="flex items-center gap-2 rounded-xl bg-orange-50 px-4 py-3">
-              <ClockAlert size={18} className="text-orange-600" />
-              <span className="text-sm font-semibold text-orange-700">
-                {counts.mendesak} Mendesak
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3">
-              <AlertTriangle size={18} className="text-red-600" />
-              <span className="text-sm font-semibold text-red-700">
-                {counts.terlambat} Terlambat
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <TaskBanner />
 
       <section className="flex flex-col gap-5">
         <div className="focus-within:border-primary flex w-full items-center gap-3 rounded-2xl border border-[#E3ECF1] bg-white px-4 shadow-sm transition-colors">
