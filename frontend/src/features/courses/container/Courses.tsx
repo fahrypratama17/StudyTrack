@@ -2,6 +2,7 @@ import { BookOpen, Plus, Search } from "lucide-react";
 import CourseCard from "../components/CourseCard";
 import CourseForm from "../components/CourseForm";
 import { useCoursePage } from "../hooks/useCoursePage";
+import { dummyCourses } from "../data/data";
 
 export default function Courses() {
   const {
@@ -72,9 +73,9 @@ export default function Courses() {
         <div className="text-secondary-text py-16 text-center">
           Memuat mata kuliah...
         </div>
-      ) : filteredCourses.length > 0 ? (
+      ) : dummyCourses.length > 0 ? (
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredCourses.map((course) => (
+          {dummyCourses.map((course) => (
             <CourseCard
               key={course.id}
               course={course}
