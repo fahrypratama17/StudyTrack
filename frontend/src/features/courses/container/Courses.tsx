@@ -3,6 +3,7 @@ import CourseCard from "../components/CourseCard";
 import CourseForm from "../components/CourseForm";
 import { useCoursePage } from "../hooks/useCoursePage";
 import { dummyCourses } from "../data/data";
+import CourseHeader from "../components/CourseHeader";
 
 export default function Courses() {
   const {
@@ -25,28 +26,9 @@ export default function Courses() {
 
   return (
     <div className="flex flex-col gap-8">
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-primary-text text-3xl font-bold md:text-4xl">
-            Mata Kuliah
-          </h1>
-
-          <p className="text-secondary-text mt-2">
-            Kelola mata kuliah yang kamu ambil pada semester ini.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={openAddForm}
-          className="bg-primary hover:bg-secondary flex cursor-pointer items-center gap-2 rounded-2xl px-6 py-3 font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
-        >
-          <Plus size={20} />
-          Tambah Mata Kuliah
-        </button>
-      </header>
-
       <section className="flex w-full flex-wrap items-center justify-between">
+        <CourseHeader />
+
         <div className="focus-within:border-primary flex w-full items-center gap-3 rounded-2xl border border-[#E3ECF1] bg-white px-4 shadow-sm">
           <Search size={20} className="text-secondary-text shrink-0" />
 
