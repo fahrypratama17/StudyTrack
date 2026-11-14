@@ -1,9 +1,7 @@
-import { useState } from "react";
-import { BookOpen, GraduationCap, Plus, Search } from "lucide-react";
+import { BookOpen, Plus, Search } from "lucide-react";
 import CourseCard from "../components/CourseCard";
 import CourseForm from "../components/CourseForm";
-import { useCourses } from "../hooks/useCourses";
-import type { Course, CourseFormData } from "../types/type";
+import { useCoursePage } from "../hooks/useCoursePage";
 
 export default function Courses() {
   const {
@@ -14,52 +12,15 @@ export default function Courses() {
     saving,
     deletingId,
     error,
-    clearError,
+    formOpen,
+    selectedCourse,
+    openAddForm,
+    openEditForm,
+    closeForm,
+    handleSave,
+    handleDelete,
     loadCourses,
-    saveCourse,
-    deleteCourse,
-  } = useCourses();
-
-  const [formOpen, setFormOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-
-  const openAddForm = () => {
-    clearError();
-    setSelectedCourse(null);
-    setFormOpen(true);
-  };
-
-  const openEditForm = (course: Course) => {
-    clearError();
-    setSelectedCourse(course);
-    setFormOpen(true);
-  };
-
-  const closeForm = () => {
-    if (saving) return;
-
-    clearError();
-    setSelectedCourse(null);
-    setFormOpen(false);
-  };
-
-  const handleSave = async (values: CourseFormData) => {
-    const success = await saveCourse(values, selectedCourse?.id);
-
-    if (success) {
-      closeForm();
-    }
-  };
-
-  const handleDelete = async (course: Course) => {
-    const confirmed = window.confirm(
-      `Hapus mata kuliah "${course.name}"? Semua tugas yang terkait juga akan terhapus.`,
-    );
-
-    if (!confirmed) return;
-
-    await deleteCourse(course.id);
-  };
+  } = useCoursePage();
 
   return (
     <div className="flex flex-col gap-8">
