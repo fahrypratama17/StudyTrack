@@ -47,6 +47,7 @@ function AppRoutes() {
       >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/courses" element={<Courses />} />
+        <Route path="/tasks" element={<Tasks />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
