@@ -14,6 +14,7 @@ import { useTaskPage } from "../hooks/useTaskPage";
 import type { TaskFilter } from "../types/type";
 import TaskBanner from "../components/TaskBanner";
 import TaskHeader from "../components/TaskHeader";
+import TaskSearch from "../components/TaskSearch";
 
 export default function Tasks() {
   const {
@@ -45,6 +46,8 @@ export default function Tasks() {
     <div className="flex flex-col gap-8">
       <TaskHeader />
       <TaskBanner />
+
+      <TaskSearch />
 
       {!formOpen && actionError && (
         <p
