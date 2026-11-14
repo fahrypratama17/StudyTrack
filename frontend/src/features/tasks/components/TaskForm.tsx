@@ -69,7 +69,6 @@ const TaskForm = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button
         type="button"
-        aria-label="Tutup form tugas"
         onClick={onClose}
         disabled={saving}
         className="absolute inset-0 bg-[#0A172B]/50 backdrop-blur-sm"
@@ -77,8 +76,6 @@ const TaskForm = ({
 
       <div
         role="dialog"
-        aria-modal="true"
-        aria-labelledby="task-form-title"
         className="relative z-10 max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl sm:p-8"
       >
         <div className="mb-7 flex items-start justify-between gap-4">
@@ -101,7 +98,6 @@ const TaskForm = ({
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Tutup"
             className="text-secondary-text cursor-pointer rounded-xl p-2 hover:bg-slate-100 disabled:opacity-50"
           >
             <X size={22} />

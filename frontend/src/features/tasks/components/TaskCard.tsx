@@ -72,7 +72,6 @@ const TaskCard = ({
       <svg
         viewBox="0 0 300 120"
         preserveAspectRatio="none"
-        aria-hidden="true"
         className="pointer-events-none absolute right-0 bottom-0 h-28 w-64 opacity-25"
       >
         <path
@@ -131,7 +130,6 @@ const TaskCard = ({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              aria-label={`Edit tugas ${task.judul}`}
               onClick={() => onEdit(task)}
               disabled={deleting || toggling}
               className="bg-secondary-light text-primary flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-colors hover:bg-[#D3EAF7] disabled:opacity-50"
@@ -141,7 +139,6 @@ const TaskCard = ({
 
             <button
               type="button"
-              aria-label={`Hapus tugas ${task.judul}`}
               onClick={() => onDelete(task)}
               disabled={deleting || toggling}
               className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl bg-red-50 text-red-600 transition-colors hover:bg-red-100 disabled:opacity-50"

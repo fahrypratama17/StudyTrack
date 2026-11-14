@@ -3,7 +3,6 @@ const TaskWave = () => {
     <svg
       viewBox="0 0 500 200"
       preserveAspectRatio="none"
-      aria-hidden="true"
       className="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-35"
     >
       <path
