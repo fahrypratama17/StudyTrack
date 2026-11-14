@@ -1,22 +1,10 @@
-import {
-  AlertTriangle,
-  ArrowRight,
-  BookOpen,
-  ClipboardList,
-  ClockAlert,
-  Plus,
-  Search,
-} from "lucide-react";
-
-import TaskCard from "../components/TaskCard";
 import TaskForm from "../components/TaskForm";
 import { useTaskPage } from "../hooks/useTaskPage";
-import type { TaskFilter } from "../types/type";
 import TaskBanner from "../components/TaskBanner";
 import TaskHeader from "../components/TaskHeader";
 import TaskSearch from "../components/TaskSearch";
-import TaskEmptyState from "../components/TaskEmptyState";
 import TaskResult from "../components/TaskResult";
+import TaskCourse from "../components/TaskCourse";
 
 export default function Tasks() {
   const {
@@ -24,9 +12,7 @@ export default function Tasks() {
     filteredTasks,
     counts,
     search,
-    setSearch,
     activeFilter,
-    setActiveFilter,
     loading,
     saving,
     deletingId,
@@ -88,19 +74,7 @@ export default function Tasks() {
         />
       )}
 
-      {!loading && !loadError && courses.length === 0 && (
-        <div className="text-secondary-text flex items-center gap-2 text-sm">
-          <BookOpen size={18} />
-          Belum ada mata kuliah.
-          <a
-            href="/courses"
-            className="text-primary inline-flex items-center gap-1 font-semibold hover:underline"
-          >
-            Tambah Mata Kuliah
-            <ArrowRight size={16} />
-          </a>
-        </div>
-      )}
+      {!loading && !loadError && courses.length === 0 && <TaskCourse />}
     </div>
   );
 }
