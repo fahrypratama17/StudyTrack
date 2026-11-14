@@ -27,11 +27,8 @@ export default function Courses() {
 
   return (
     <div className="flex flex-col gap-8">
-      <section className="flex w-full flex-wrap items-center justify-between">
-        <CourseHeader />
-
-        <CourseSearch />
-      </section>
+      <CourseHeader />
+      <CourseSearch />
 
       {!formOpen && error && (
         <div
