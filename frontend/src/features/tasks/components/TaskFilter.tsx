@@ -27,7 +27,7 @@ const TaskFilter = () => {
               className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 active
                   ? "border-primary bg-primary text-white"
-                  : "text-secondary-text hover:border-primary/40 hover:text-primary border-white/80 bg-white"
+                  : "text-secondary-text hover:border-primary/40 hover:text-primary border-[#E3ECF1] bg-white"
               }`}
             >
               {filter.label}
