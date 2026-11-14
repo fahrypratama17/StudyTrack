@@ -7,7 +7,6 @@ import type { Course, CourseFormData } from "../types/type";
 
 export default function Courses() {
   const {
-    courses,
     filteredCourses,
     search,
     setSearch,
@@ -85,54 +84,8 @@ export default function Courses() {
         </button>
       </header>
 
-      <section className="relative isolate overflow-hidden rounded-3xl bg-linear-to-r from-[#1F506D] to-[#0D6684] px-7 py-9 text-white md:px-10">
-        <svg
-          viewBox="0 0 500 200"
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute right-0 bottom-0 -z-10 h-full w-[50%] opacity-20"
-        >
-          <path
-            d="M0 170 C90 70 180 190 290 90 C370 15 430 100 500 25 L500 200 L0 200 Z"
-            fill="white"
-          />
-          <path
-            d="M0 190 C110 130 220 200 340 130 C420 75 470 140 500 110 L500 200 L0 200 Z"
-            fill="#BDE0F0"
-          />
-        </svg>
-
-        <div className="relative flex items-center gap-5">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/15">
-            <GraduationCap size={34} />
-          </div>
-
-          <div>
-            <p className="text-sm text-white/75">Semester Berjalan</p>
-
-            <h2 className="mt-1 text-2xl font-bold">
-              {courses.length} Mata Kuliah Terdaftar
-            </h2>
-
-            <p className="mt-2 text-sm text-white/80">
-              Susun aktivitas kuliahmu dengan lebih terorganisir.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 className="text-primary-text text-xl font-bold">
-            Daftar Mata Kuliah
-          </h2>
-
-          <p className="text-secondary-text mt-1 text-sm">
-            Menampilkan {filteredCourses.length} dari {courses.length} mata
-            kuliah
-          </p>
-        </div>
-
-        <div className="focus-within:border-primary flex w-full items-center gap-3 rounded-2xl border border-[#E3ECF1] bg-white px-4 shadow-sm sm:max-w-sm">
+      <section className="flex w-full flex-wrap items-center justify-between">
+        <div className="focus-within:border-primary flex w-full items-center gap-3 rounded-2xl border border-[#E3ECF1] bg-white px-4 shadow-sm">
           <Search size={20} className="text-secondary-text shrink-0" />
 
           <input
