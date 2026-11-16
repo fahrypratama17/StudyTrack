@@ -100,7 +100,6 @@ export function useProfile() {
     }
   };
 
-  // Ubah password
   const changePassword = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
