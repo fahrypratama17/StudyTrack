@@ -24,9 +24,9 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <div className="container">Memuat...</div>;
   }
 
-  // if (!user) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
   return <>{children}</>;
 }
@@ -52,7 +52,6 @@ function AppRoutes() {
         <Route path="/profile" element={<Profile />} />
       </Route>
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
