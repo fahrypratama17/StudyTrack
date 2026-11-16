@@ -12,7 +12,9 @@ export default function Tasks() {
     filteredTasks,
     counts,
     search,
+    setSearch,
     activeFilter,
+    setActiveFilter,
     loading,
     saving,
     deletingId,
@@ -32,10 +34,17 @@ export default function Tasks() {
 
   return (
     <div className="flex flex-col gap-8">
-      <TaskHeader />
-      <TaskBanner />
+      <TaskHeader openAddForm={openAddForm} />
+      <TaskBanner counts={counts} />
 
-      <TaskSearch />
+      <TaskSearch
+        search={search}
+        setSearch={setSearch}
+        filteredTasks={filteredTasks}
+        counts={counts}
+        activeFilter={activeFilter}
+        setActiveFilter={setActiveFilter}
+      />
 
       {!formOpen && actionError && (
         <p

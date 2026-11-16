@@ -1,10 +1,10 @@
 import { AlertTriangle, ClockAlert } from "lucide-react";
-import { useTaskPage } from "../hooks/useTaskPage";
+import type { useTaskPage } from "../hooks/useTaskPage";
 import TaskWave from "./TaskWave";
 
-const TaskBanner = () => {
-  const { counts } = useTaskPage();
-
+const TaskBanner = ({
+  counts,
+}: Pick<ReturnType<typeof useTaskPage>, "counts">) => {
   return (
     <section className="relative isolate overflow-hidden rounded-2xl border border-[#DCEAF2] bg-white px-6 py-6 shadow-sm md:px-8">
       <TaskWave />

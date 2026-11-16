@@ -1,8 +1,6 @@
-import { useDashboard } from "../hooks/useDashboard";
+import type { DashboardSummary } from "../types/type";
 
-const TaskProgress = () => {
-  const { summary } = useDashboard();
-
+const TaskProgress = ({ summary }: { summary: DashboardSummary }) => {
   return (
     <div className="rounded-3xl border border-[#E3ECF1] bg-white p-6 shadow-sm md:p-8">
       <div className="mb-7">

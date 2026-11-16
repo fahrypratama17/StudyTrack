@@ -2,6 +2,7 @@ import type { Task, TaskStatus } from "../../../features/tasks/types/type";
 
 export interface TasksResponseDto {
   tasks: Task[];
+  server_time: string;
 }
 
 export interface CreateTaskRequestDto {

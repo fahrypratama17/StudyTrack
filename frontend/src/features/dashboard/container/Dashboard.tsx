@@ -14,7 +14,33 @@ import TaskList from "../components/TaskList";
 import DashboardHeader from "../components/DashboardHeader";
 
 export default function Dashboard() {
-  const { summary } = useDashboard();
+  const { summary, priorityTasks, recentTasks, loading, loadError, loadTasks } =
+    useDashboard();
+
+  if (loading) {
+    return (
+      <p role="status" className="text-secondary-text py-16 text-center">
+        Memuat dashboard...
+      </p>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="rounded-2xl bg-red-50 p-6">
+        <p role="alert" className="text-red-600">
+          {loadError}
+        </p>
+        <button
+          type="button"
+          onClick={() => void loadTasks()}
+          className="text-primary mt-4 underline"
+        >
+          Coba Muat Ulang
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -60,11 +86,11 @@ export default function Dashboard() {
       </section>
 
       <section className="grid grid-cols-1 items-stretch gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
-        <TaskPriority />
-        <TaskProgress />
+        <TaskPriority priorityTasks={priorityTasks} />
+        <TaskProgress summary={summary} />
       </section>
 
-      <TaskList />
+      <TaskList recentTasks={recentTasks} />
     </div>
   );
 }

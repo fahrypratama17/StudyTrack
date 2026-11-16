@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, CalendarDays, CheckCircle2 } from "lucide-react";
-import { useDashboard } from "../hooks/useDashboard";
+import type { DashboardTaskWithPriority } from "../types/type";
 import { statusStyles } from "../types/type";
 import { formatDeadline } from "../hooks/useFormatDeadline";
 
-const TaskPriority = () => {
-  const { priorityTasks } = useDashboard();
-
+const TaskPriority = ({
+  priorityTasks,
+}: {
+  priorityTasks: DashboardTaskWithPriority[];
+}) => {
   return (
     <div className="rounded-3xl border border-white/80 bg-white p-6 shadow-sm md:p-8">
       <div className="mb-6 flex items-center justify-between gap-3">

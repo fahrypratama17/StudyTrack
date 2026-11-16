@@ -40,7 +40,7 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center gap-5">
-              <span className="text-secondary-text">{user.name}</span>
+              <span className="text-secondary-text">{user.nama}</span>
 
               <button
                 type="button"

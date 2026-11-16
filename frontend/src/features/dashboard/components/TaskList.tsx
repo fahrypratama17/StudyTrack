@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight, CalendarDays, ClipboardList } from "lucide-react";
 import { statusStyles } from "../types/type";
 import { formatDeadline } from "../hooks/useFormatDeadline";
-import { useDashboard } from "../hooks/useDashboard";
+import type { DashboardTaskWithPriority } from "../types/type";
 
-const TaskList = () => {
-  const { recentTasks } = useDashboard();
-
+const TaskList = ({
+  recentTasks,
+}: {
+  recentTasks: DashboardTaskWithPriority[];
+}) => {
   return (
     <section className="rounded-3xl border border-white/80 bg-white p-6 shadow-sm md:p-8">
       <div className="mb-6 flex items-center justify-between gap-3">
