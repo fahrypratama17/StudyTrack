@@ -1,6 +1,6 @@
 # StudyTrack Backend — PostgreSQL
 
-Backend Express + TypeScript untuk autentikasi, mata kuliah, tugas, dan reminder deadline. Semua data aplikasi disimpan di PostgreSQL, dengan query berparameter dan connection pool. Panduan ini menggantikan bagian backend pada README starter kit di folder induk yang masih menjelaskan penyimpanan JSON.
+Backend Express + TypeScript untuk autentikasi, profil, mata kuliah, tugas, dan reminder deadline. Semua data aplikasi disimpan di PostgreSQL, dengan query berparameter dan connection pool. Panduan menjalankan seluruh aplikasi tersedia di [README utama](../README.md).
 
 ## Menjalankan
 
@@ -105,7 +105,7 @@ Interpretasi yang ditetapkan karena belum eksplisit di soal: tugas selesai tidak
 
 Urutan daftar: **mendekati_deadline → overdue → normal**. Pada dua kategori peringatan, deadline paling awal didahulukan. Pada normal, `created_at` terbaru didahulukan sesuai perilaku awal. Jika waktu sama, gunakan `created_at DESC`, lalu `id DESC` untuk urutan yang konsisten. Semua kategori tetap tampil dan seluruh query dibatasi ke pengguna dari token, lintas mata kuliah.
 
-Kategori dihitung saat request, tanpa scheduler/email. Frontend dapat menggunakan `deadline_category` untuk penanda berbeda, dan mengambil ulang daftar setelah perubahan tugas serta secara berkala (misalnya 60 detik) atau saat tab aktif agar penanda mengikuti waktu. Pengembangan frontend/slide deck berada di luar implementasi backend ini.
+Kategori dihitung saat request, tanpa scheduler/email. Frontend menggunakan `deadline_category` untuk penanda, memperbarui data dari respons perubahan tugas, dan mengambil ulang daftar setiap 60 detik ketika tab terlihat atau saat tab kembali aktif.
 
 ## API
 
@@ -117,6 +117,8 @@ Semua path diawali `/api`. Selain health/register/login, wajib header `Authoriza
 | POST | `/auth/register` | `{ nama, email, password }`; 201 `{ token, user }` |
 | POST | `/auth/login` | `{ email, password }`; 200 `{ token, user }` |
 | GET | `/auth/me` | `{ user: { id, nama, email } }` |
+| PATCH | `/auth/profile` | `{ nama }` (2–100 karakter); `{ token, user }` |
+| PATCH | `/auth/password` | `{ currentPassword, newPassword }`; verifikasi password lama, lalu `{ success: true }` |
 | GET | `/courses` | `{ courses: [...] }` milik pengguna |
 | POST | `/courses` | `{ name, kode?, dosen? }`; 201 `{ course }` |
 | PUT | `/courses/:id` | `{ name?, kode?, dosen? }`; `{ course }` |
