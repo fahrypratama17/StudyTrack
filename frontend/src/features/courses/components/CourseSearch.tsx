@@ -1,9 +1,10 @@
 import { Search } from "lucide-react";
-import { useCoursePage } from "../hooks/useCoursePage";
+interface CourseSearchProps {
+  search: string;
+  setSearch: (value: string) => void;
+}
 
-const CourseSearch = () => {
-  const { search, setSearch } = useCoursePage();
-
+const CourseSearch = ({ search, setSearch }: CourseSearchProps) => {
   return (
     <section className="flex w-full flex-wrap items-center justify-between">
       <div className="focus-within:border-primary flex w-full items-center gap-3 rounded-2xl border border-[#E3ECF1] bg-white px-4 shadow-sm">

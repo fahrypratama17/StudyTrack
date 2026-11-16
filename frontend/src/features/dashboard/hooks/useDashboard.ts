@@ -1,56 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useTasks } from "../../tasks/hooks/useTask";
+import { getDeadlineState } from "../../../shared/repository/tasks/deadline";
 
-import { dummyCourses, dummyTasks } from "../data/data";
-
-import type {
-  DashboardTask,
-  DashboardTaskWithPriority,
-  TaskPriority,
-} from "../types/type";
-
-const ONE_DAY = 24 * 60 * 60 * 1000;
-
-const getTaskPriority = (task: DashboardTask, now: number): TaskPriority => {
-  if (task.status === "selesai") {
-    return "selesai";
-  }
-
-  const deadline = new Date(task.deadline).getTime();
-
-  if (Number.isNaN(deadline)) {
-    return "normal";
-  }
-
-  const remaining = deadline - now;
-
-  if (remaining < 0) {
-    return "terlambat";
-  }
-
-  if (remaining < ONE_DAY) {
-    return "mendesak";
-  }
-
-  return "normal";
-};
+import type { DashboardTaskWithPriority, TaskPriority } from "../types/type";
 
 export const useDashboard = () => {
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setNow(Date.now());
-    }, 60_000);
-
-    return () => window.clearInterval(interval);
-  }, []);
+  const { tasks, courses, loading, loadError, loadTasks } = useTasks();
 
   const tasksWithPriority = useMemo<DashboardTaskWithPriority[]>(() => {
-    return dummyTasks.map((task) => ({
-      ...task,
-      priority: getTaskPriority(task, now),
-    }));
-  }, [now]);
+    return tasks.map((task) => {
+      const state = getDeadlineState(task);
+      return { ...task, priority: state === "belum" ? "normal" : state };
+    });
+  }, [tasks]);
 
   const summary = useMemo(() => {
     const totalTasks = tasksWithPriority.length;
@@ -68,7 +30,7 @@ export const useDashboard = () => {
     ).length;
 
     return {
-      totalCourses: dummyCourses.length,
+      totalCourses: courses.length,
       totalTasks,
       completed,
       pending: totalTasks - completed,
@@ -77,7 +39,7 @@ export const useDashboard = () => {
       completionRate:
         totalTasks === 0 ? 0 : Math.round((completed / totalTasks) * 100),
     };
-  }, [tasksWithPriority]);
+  }, [tasksWithPriority, courses]);
 
   const priorityTasks = useMemo(() => {
     const order: Record<TaskPriority, number> = {
@@ -113,6 +75,9 @@ export const useDashboard = () => {
   }, [tasksWithPriority]);
 
   return {
+    loading,
+    loadError,
+    loadTasks,
     summary,
     priorityTasks,
     recentTasks,

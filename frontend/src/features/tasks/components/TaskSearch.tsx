@@ -1,10 +1,18 @@
 import { Search } from "lucide-react";
-import { useTaskPage } from "../hooks/useTaskPage";
+import type { useTaskPage } from "../hooks/useTaskPage";
 import TaskFilter from "./TaskFilter";
 
-const TaskSearch = () => {
-  const { search, setSearch } = useTaskPage();
+type TaskSearchProps = Pick<
+  ReturnType<typeof useTaskPage>,
+  | "search"
+  | "setSearch"
+  | "filteredTasks"
+  | "counts"
+  | "activeFilter"
+  | "setActiveFilter"
+>;
 
+const TaskSearch = ({ search, setSearch, ...filters }: TaskSearchProps) => {
   return (
     <section className="flex flex-col gap-5">
       <div className="focus-within:border-primary flex w-full items-center gap-3 rounded-2xl border border-white/80 bg-white px-4 shadow-sm transition-colors">
@@ -19,7 +27,7 @@ const TaskSearch = () => {
         />
       </div>
 
-      <TaskFilter />
+      <TaskFilter {...filters} />
     </section>
   );
 };

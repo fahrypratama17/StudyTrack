@@ -1,6 +1,5 @@
 import CourseForm from "../components/CourseForm";
 import { useCoursePage } from "../hooks/useCoursePage";
-import { dummyCourses } from "../data/data";
 import CourseHeader from "../components/CourseHeader";
 import CourseSearch from "../components/CourseSearch";
 import CourseContent from "../components/CourseContent";
@@ -9,6 +8,7 @@ export default function Courses() {
   const {
     filteredCourses,
     search,
+    setSearch,
     loading,
     saving,
     deletingId,
@@ -25,8 +25,8 @@ export default function Courses() {
 
   return (
     <div className="flex flex-col gap-8">
-      <CourseHeader />
-      <CourseSearch />
+      <CourseHeader openAddForm={openAddForm} />
+      <CourseSearch search={search} setSearch={setSearch} />
 
       {!formOpen && error && (
         <div
@@ -38,7 +38,7 @@ export default function Courses() {
       )}
 
       <CourseContent
-        courses={dummyCourses}
+        courses={filteredCourses}
         loading={loading}
         deletingId={deletingId}
         search={search}

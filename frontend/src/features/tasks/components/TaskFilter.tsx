@@ -1,4 +1,4 @@
-import { useTaskPage } from "../hooks/useTaskPage";
+import type { useTaskPage } from "../hooks/useTaskPage";
 import type { TaskFilter } from "../types/type";
 
 const filters: { value: TaskFilter; label: string }[] = [
@@ -9,10 +9,17 @@ const filters: { value: TaskFilter; label: string }[] = [
   { value: "selesai", label: "Selesai" },
 ];
 
-const TaskFilter = () => {
-  const { filteredTasks, counts, activeFilter, setActiveFilter } =
-    useTaskPage();
+type TaskFilterProps = Pick<
+  ReturnType<typeof useTaskPage>,
+  "filteredTasks" | "counts" | "activeFilter" | "setActiveFilter"
+>;
 
+const TaskFilter = ({
+  filteredTasks,
+  counts,
+  activeFilter,
+  setActiveFilter,
+}: TaskFilterProps) => {
   return (
     <>
       <div className="flex flex-wrap items-center gap-3">
