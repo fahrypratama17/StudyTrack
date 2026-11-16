@@ -4,15 +4,10 @@ import { isAxiosError } from "axios";
 
 import api from "../../../service/api";
 import { useAuth } from "../../../shared/hooks/useAuth";
-
-interface ProfileUser {
-  id: string | number;
-  nama: string;
-  email: string;
-}
+import type { User } from "../../auth/types/type";
 
 interface UpdateProfileResponse {
-  user: ProfileUser;
+  user: User;
   token: string;
 }
 
@@ -31,16 +26,9 @@ function getErrorMessage(error: unknown): string {
 }
 
 export function useProfile() {
-  const { user } = useAuth();
-
-  const account = user as {
-    nama?: string;
-    name?: string;
-    email?: string;
-  } | null;
-
-  const currentName = account?.nama ?? account?.name ?? "";
-  const email = account?.email ?? "";
+  const { user, login } = useAuth();
+  const currentName = user?.nama ?? "";
+  const email = user?.email ?? "";
 
   const [name, setName] = useState(currentName);
   const [nameSaving, setNameSaving] = useState(false);
@@ -90,9 +78,7 @@ export function useProfile() {
         nama: trimmedName,
       });
 
-      localStorage.setItem("studytrack_token", response.data.token);
-
-      window.location.reload();
+      login(response.data.token, response.data.user);
     } catch (error: unknown) {
       setNameError(getErrorMessage(error));
     } finally {
