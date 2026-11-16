@@ -9,6 +9,7 @@ import Home from "../features/home/container/Home";
 import DashboardLayout from "../shared/layout/DashboardLayout";
 import Dashboard from "../features/dashboard/container/Dashboard";
 import Courses from "../features/courses/container/Courses";
+import Profile from "../features/profile/container/Profile";
 
 /** Props untuk komponen ProtectedRoute. */
 interface ProtectedRouteProps {
@@ -48,6 +49,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/tasks" element={<Tasks />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />

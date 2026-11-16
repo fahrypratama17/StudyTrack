@@ -1,5 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, BookOpen, ClipboardList, LogOut } from "lucide-react";
+import {
+  LayoutDashboard,
+  BookOpen,
+  ClipboardList,
+  LogOut,
+  UserRound,
+} from "lucide-react";
 import { useSidebar } from "../hooks/useSidebar";
 
 interface SidebarProps {
@@ -22,6 +28,11 @@ const navigation = [
     label: "Daftar Tugas",
     to: "/tasks",
     icon: ClipboardList,
+  },
+  {
+    label: "Profile",
+    to: "/profile",
+    icon: UserRound,
   },
 ];
 
