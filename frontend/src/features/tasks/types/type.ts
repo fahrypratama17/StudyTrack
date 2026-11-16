@@ -1,4 +1,5 @@
 export type TaskStatus = "belum" | "selesai";
+export type DeadlineCategory = "mendekati_deadline" | "overdue" | "normal";
 
 export type DeadlineState = "belum" | "mendesak" | "terlambat" | "selesai";
 
@@ -14,6 +15,8 @@ export interface Task {
   deadline: string;
   status: TaskStatus;
   created_at: string;
+  deadline_category: DeadlineCategory;
+  remaining_seconds: number;
 }
 
 export interface TaskView extends Task {
@@ -29,10 +32,12 @@ export interface TaskFormData {
 
 export interface TasksResponse {
   tasks: Task[];
+  server_time: string;
 }
 
 export interface TaskResponse {
   task: Task;
+  server_time: string;
 }
 
 export interface ApiErrorResponse {

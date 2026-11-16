@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
 export interface User {
-  id: string;
-  name: string;
+  id: number;
+  nama: string;
   email: string;
 }
 

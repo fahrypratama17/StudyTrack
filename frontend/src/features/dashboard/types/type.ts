@@ -5,16 +5,9 @@ export interface DashboardCourse {
   dosen: string;
 }
 
-export interface DashboardTask {
-  id: number;
-  judul: string;
-  deskripsi: string;
-  deadline: string;
-  status: "belum" | "selesai";
-  created_at: string;
-  mata_kuliah_id: number;
-  mata_kuliah: string | null;
-}
+import type { Task } from "../../tasks/types/type";
+
+export type DashboardTask = Task;
 
 export type TaskPriority = "normal" | "mendesak" | "terlambat" | "selesai";
 
