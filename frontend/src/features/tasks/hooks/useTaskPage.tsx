@@ -1,38 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import {
+  compareTasks,
+  getDeadlineState,
+} from "../../../shared/repository/tasks/deadline";
 
 import { useTasks } from "./useTask";
 
-import type {
-  Task,
-  TaskFilter,
-  TaskFormData,
-  TaskView,
-  DeadlineState,
-} from "../types/type";
-
-const ONE_DAY = 24 * 60 * 60 * 1000;
-
-function getDeadlineState(task: Task, now: number): DeadlineState {
-  if (task.status === "selesai") return "selesai";
-
-  const deadline = new Date(task.deadline).getTime();
-
-  if (!Number.isFinite(deadline)) return "belum";
-
-  const remaining = deadline - now;
-
-  if (remaining < 0) return "terlambat";
-  if (remaining < ONE_DAY) return "mendesak";
-
-  return "belum";
-}
-
-const priorityOrder: Record<DeadlineState, number> = {
-  mendesak: 0,
-  terlambat: 1,
-  belum: 2,
-  selesai: 3,
-};
+import type { Task, TaskFilter, TaskFormData, TaskView } from "../types/type";
 
 export function useTaskPage() {
   const {
@@ -57,22 +31,12 @@ export function useTaskPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  const [now, setNow] = useState(() => Date.now());
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setNow(Date.now());
-    }, 60_000);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
   const tasksWithState = useMemo<TaskView[]>(() => {
     return tasks.map((task) => ({
       ...task,
-      deadlineState: getDeadlineState(task, now),
+      deadlineState: getDeadlineState(task),
     }));
-  }, [tasks, now]);
+  }, [tasks]);
 
   const counts = useMemo(() => {
     return {
@@ -108,14 +72,7 @@ export function useTaskPage() {
 
         return matchesSearch && matchesFilter;
       })
-      .sort((a, b) => {
-        const priorityDiff =
-          priorityOrder[a.deadlineState] - priorityOrder[b.deadlineState];
-
-        if (priorityDiff !== 0) return priorityDiff;
-
-        return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-      });
+      .sort(compareTasks);
   }, [tasksWithState, search, activeFilter]);
 
   const openAddForm = () => {

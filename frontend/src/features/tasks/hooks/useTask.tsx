@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { isAxiosError } from "axios";
 
 import api from "../../../service/api";
@@ -32,10 +32,11 @@ export function useTasks() {
 
   const [loadError, setLoadError] = useState("");
   const [actionError, setActionError] = useState("");
+  const loadVersion = useRef(0);
 
-  const loadTasks = useCallback(async () => {
-    setLoading(true);
-    setLoadError("");
+  const loadTasks = useCallback(async (silent = false) => {
+    const version = ++loadVersion.current;
+    if (!silent) setLoading(true);
 
     try {
       const [taskRes, courseRes] = await Promise.all([
@@ -43,17 +44,34 @@ export function useTasks() {
         api.get<CoursesResponse>("/courses"),
       ]);
 
+      if (version !== loadVersion.current) return;
       setTasks(taskRes.data.tasks);
       setCourses(courseRes.data.courses);
+      setLoadError("");
     } catch (err: unknown) {
-      setLoadError(getErrorMessage(err, "Gagal memuat daftar tugas."));
+      if (version === loadVersion.current) {
+        setLoadError(getErrorMessage(err, "Gagal memuat daftar tugas."));
+      }
     } finally {
-      setLoading(false);
+      if (version === loadVersion.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     void loadTasks();
+    const refresh = () => {
+      if (document.visibilityState === "visible") void loadTasks(true);
+    };
+    const interval = window.setInterval(refresh, 60_000);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+
+    return () => {
+      loadVersion.current++;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
   }, [loadTasks]);
 
   const saveTask = async (
@@ -65,19 +83,19 @@ export function useTasks() {
     setSaving(true);
     setActionError("");
 
-    const payload = {
-      judul: values.judul.trim(),
-      deskripsi: values.deskripsi.trim(),
-      deadline: new Date(values.deadline).toISOString(),
-    };
-
     try {
+      const payload = {
+        judul: values.judul.trim(),
+        deskripsi: values.deskripsi.trim(),
+        deadline: new Date(values.deadline).toISOString(),
+      };
       if (selectedTask) {
         const response = await api.put<TaskResponse>(
           `/tasks/${encodeURIComponent(String(selectedTask.id))}`,
           payload,
         );
 
+        loadVersion.current++;
         setTasks((prev) =>
           prev.map((task) =>
             task.id === selectedTask.id
@@ -93,15 +111,8 @@ export function useTasks() {
           mata_kuliah_id: courseId,
         });
 
-        const course = courses.find((item) => Number(item.id) === courseId);
-
-        setTasks((prev) => [
-          {
-            ...response.data.task,
-            mata_kuliah: course?.name ?? null,
-          },
-          ...prev,
-        ]);
+        loadVersion.current++;
+        setTasks((prev) => [response.data.task, ...prev]);
       }
 
       return true;
@@ -130,12 +141,16 @@ export function useTasks() {
     const status = task.status === "selesai" ? "belum" : "selesai";
 
     try {
-      await api.put(`/tasks/${encodeURIComponent(String(task.id))}`, {
-        status,
-      });
+      const response = await api.put<TaskResponse>(
+        `/tasks/${encodeURIComponent(String(task.id))}`,
+        {
+          status,
+        },
+      );
 
+      loadVersion.current++;
       setTasks((prev) =>
-        prev.map((item) => (item.id === task.id ? { ...item, status } : item)),
+        prev.map((item) => (item.id === task.id ? response.data.task : item)),
       );
     } catch (err: unknown) {
       setActionError(getErrorMessage(err, "Gagal mengubah status tugas."));
@@ -153,6 +168,7 @@ export function useTasks() {
     try {
       await api.delete(`/tasks/${encodeURIComponent(String(id))}`);
 
+      loadVersion.current++;
       setTasks((prev) => prev.filter((task) => task.id !== id));
     } catch (err: unknown) {
       setActionError(getErrorMessage(err, "Gagal menghapus tugas."));
