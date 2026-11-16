@@ -3,3 +3,4 @@ dist/
 .env
 backend/db.json
 *.log
+.tmp/
