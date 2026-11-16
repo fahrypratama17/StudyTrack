@@ -1,36 +1,24 @@
 import jwt from "jsonwebtoken";
-import type { RequestHandler } from "express";
 import { JWT_SECRET } from "../config.js";
+import { pool } from "../db.js";
+import { asyncHandler, HttpError } from "./errors.js";
+import type { UserProfile } from "../types.js";
 
-/**
- * Middleware autentikasi. Memverifikasi JWT dari header
- * `Authorization: Bearer <token>`.
- *
- * Jika token valid, data pengguna disimpan di `req.user` ({ id, nama, email })
- * dan request diteruskan. Jika tidak, server membalas 401.
- */
-export const requireAuth: RequestHandler = (req, res, next) => {
+export const requireAuth = asyncHandler(async (req, _res, next) => {
   const header = req.headers.authorization || "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
-
-  if (!token) {
-    return res.status(401).json({ error: "Token tidak ditemukan. Silakan login terlebih dahulu." });
-  }
-
+  if (!token) throw new HttpError(401, "Token tidak ditemukan. Silakan login terlebih dahulu.");
+  let id: number;
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    if (typeof payload === "string") {
-      throw new Error("Payload JWT tidak valid.");
-    }
-    const id: unknown = payload.sub;
-    const nama: unknown = payload.nama;
-    const email: unknown = payload.email;
-    if (typeof id !== "number" || typeof nama !== "string" || typeof email !== "string") {
-      throw new Error("Payload JWT tidak valid.");
-    }
-    req.user = { id, nama, email };
-    next();
+    const payload = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] });
+    if (typeof payload === "string" || !/^\d+$/.test(String(payload.sub))) throw new Error();
+    id = Number(payload.sub);
+    if (!Number.isSafeInteger(id) || id < 1 || id > 2147483647) throw new Error();
   } catch {
-    return res.status(401).json({ error: "Token tidak valid atau sudah kedaluwarsa." });
+    throw new HttpError(401, "Token tidak valid atau sudah kedaluwarsa.");
   }
-};
+  const { rows } = await pool.query<UserProfile>("SELECT id, nama, email FROM users WHERE id = $1", [id]);
+  if (!rows[0]) throw new HttpError(401, "Akun tidak ditemukan. Silakan login kembali.");
+  req.user = rows[0];
+  next();
+});

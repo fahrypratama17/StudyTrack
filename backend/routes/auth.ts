@@ -1,101 +1,44 @@
 import { Router } from "express";
-import type { LoginBody, RegisterBody, UserProfile } from "../types.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { readDB, writeDB } from "../db.js";
+import { pool } from "../db.js";
 import { JWT_SECRET } from "../config.js";
 import { requireAuth } from "../middleware/auth.js";
+import { asyncHandler, HttpError } from "../middleware/errors.js";
+import { email as validateEmail, password as validatePassword, text } from "../validation.js";
+import type { User, UserProfile } from "../types.js";
 
 const router = Router();
+const signToken = (user: UserProfile): string => jwt.sign(
+  { nama: user.nama, email: user.email }, JWT_SECRET,
+  { subject: String(user.id), expiresIn: "7d", algorithm: "HS256" },
+);
 
-/**
- * Membuat JWT yang berlaku 7 hari untuk pengguna.
- *
- * @param {{ id: number, nama: string, email: string }} user
- * @returns {string} Token JWT.
- */
-function signToken(user: UserProfile): string {
-  return jwt.sign(
-    { sub: user.id, nama: user.nama, email: user.email },
-    JWT_SECRET,
-    { expiresIn: "7d" }
+router.post("/register", asyncHandler(async (req, res) => {
+  const nama = text(req.body.nama, "Nama", 200);
+  const email = validateEmail(req.body.email);
+  const password = validatePassword(req.body.password);
+  const hash = await bcrypt.hash(password, 10);
+  const { rows } = await pool.query<UserProfile>(
+    `INSERT INTO users (nama, email, password_hash) VALUES ($1, $2, $3)
+     ON CONFLICT (email) DO NOTHING RETURNING id, nama, email`, [nama, email, hash],
   );
-}
+  const user = rows[0];
+  if (!user) throw new HttpError(409, "Email sudah terdaftar.");
+  res.status(201).json({ token: signToken(user), user });
+}));
 
-/**
- * POST /api/auth/register
- * Mendaftarkan akun baru, lalu langsung mengembalikan token login.
- *
- * Body     : { nama, email, password } (password minimal 6 karakter)
- * Response : 201 { token, user } | 400 input tidak valid | 409 email sudah terdaftar
- */
-router.post<{}, unknown, RegisterBody>("/register", (req, res) => {
-  const { nama, email, password } = req.body;
-
-  if (!nama || !email || !password) {
-    return res.status(400).json({ error: "Nama, email, dan password wajib diisi." });
+router.post("/login", asyncHandler(async (req, res) => {
+  const email = validateEmail(req.body.email);
+  const password = validatePassword(req.body.password);
+  const { rows } = await pool.query<User>("SELECT * FROM users WHERE email = $1", [email]);
+  const user = rows[0];
+  if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+    throw new HttpError(401, "Email atau password salah.");
   }
-  if (password.length < 6) {
-    return res.status(400).json({ error: "Password minimal 6 karakter." });
-  }
+  const profile: UserProfile = { id: user.id, nama: user.nama, email: user.email };
+  res.json({ token: signToken(profile), user: profile });
+}));
 
-  const db = readDB();
-  const existing = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-  if (existing) {
-    return res.status(409).json({ error: "Email sudah terdaftar." });
-  }
-
-  const newUser = {
-    id: db.nextIds.user++,
-    nama,
-    email,
-    password_hash: bcrypt.hashSync(password, 10)
-  };
-  db.users.push(newUser);
-  writeDB(db);
-
-  const token = signToken(newUser);
-  res.status(201).json({
-    token,
-    user: { id: newUser.id, nama: newUser.nama, email: newUser.email }
-  });
-});
-
-/**
- * POST /api/auth/login
- * Memverifikasi email dan password, lalu mengembalikan token login.
- *
- * Body     : { email, password }
- * Response : 200 { token, user } | 400 input kosong | 401 email atau password salah
- */
-router.post<{}, unknown, LoginBody>("/login", (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email dan password wajib diisi." });
-  }
-
-  const db = readDB();
-  const user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-  if (!user || !bcrypt.compareSync(password, user.password_hash)) {
-    return res.status(401).json({ error: "Email atau password salah." });
-  }
-
-  const token = signToken(user);
-  res.json({
-    token,
-    user: { id: user.id, nama: user.nama, email: user.email }
-  });
-});
-
-/**
- * GET /api/auth/me
- * Mengembalikan profil pengguna dari token yang sedang dipakai.
- *
- * Response : 200 { user } | 401 token tidak ada atau tidak valid
- */
-router.get("/me", requireAuth, (req, res) => {
-  res.json({ user: req.user });
-});
-
+router.get("/me", requireAuth, (req, res) => { res.json({ user: req.user }); });
 export default router;
