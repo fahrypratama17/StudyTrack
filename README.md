@@ -1,168 +1,210 @@
-# StudyTrack Baseline
+﻿# StudyTrack
 
-Starter kit untuk bonus **Implementasi kode nyata** pada studi kasus seleksi Software Engineer, Academya Arkavidia 11.0.
+Aplikasi pengelolaan mata kuliah dan tugas dengan reminder deadline. Frontend React + TypeScript + Vite terhubung ke REST API Express + TypeScript. Data disimpan di **PostgreSQL**, bukan file JSON.
 
-Isinya adalah kondisi StudyTrack saat ini: empat modul yang sudah berjalan (autentikasi, manajemen mata kuliah, manajemen tugas, dan halaman daftar tugas). Fitur **Reminder Tugas Mendekati Deadline** sengaja belum ada karena itulah yang perlu Anda rancang dan kerjakan.
+## Fitur
 
-> Starter kit ini bersifat opsional. Anda boleh memakai stack lain selama struktur datanya konsisten dengan Bagian 1 (Konteks Aplikasi) pada dokumen studi kasus.
-
-## Stack
-
-- **Backend:** Node.js + Express. Data disimpan di file JSON, jadi tidak perlu memasang database terpisah.
-- **Frontend:** React + Vite.
+- Registrasi, login, logout, serta pemulihan sesi melalui JWT. Halaman aplikasi memerlukan login.
+- Dashboard dengan statistik, progres, tugas prioritas, dan tugas terbaru dari database pengguna.
+- Tambah, lihat, edit, hapus, dan cari mata kuliah. Menghapus mata kuliah juga menghapus tugas terkait.
+- Tambah, edit, hapus, cari, filter, dan tandai tugas sebagai selesai/belum selesai.
+- Penanda deadline berdasarkan kategori dari backend: mendesak (sisa kurang dari 24 jam), terlambat (deadline tercapai/terlewati), dan normal. Tugas selesai tidak memicu reminder.
+- Profil pengguna: lihat email, ubah nama, dan ganti password dengan verifikasi password lama.
 
 ## Prasyarat
 
-- Node.js 20.19 atau lebih baru (atau 22.12+), sesuai syarat Vite 8.
-- npm.
+- Node.js **22.12+** dan npm.
+- **Docker Desktop yang sudah berjalan** dengan Docker Compose, atau PostgreSQL 18 lokal.
+- Port default: frontend `5173`, backend `4000`, dan PostgreSQL Docker `5433`.
 
-## Fitur yang Sudah Tersedia
+Perintah berikut menggunakan **PowerShell** dan dimulai dari folder utama proyek. Untuk Bash, ganti perintah salin konfigurasi dengan `cp backend/.env.example backend/.env` dan `cp frontend/.env.example frontend/.env` apabila file belum ada.
 
-- Registrasi, login, dan logout. Password di-hash dengan bcrypt dan sesi memakai JWT.
-- Manajemen Mata Kuliah: lihat, tambah, dan hapus di UI. Endpoint ubah (`PUT`) juga tersedia di API.
-- Manajemen Tugas per mata kuliah: lihat, tambah, ubah status (belum/selesai), dan hapus di UI. Endpoint ubah (`PUT`) juga tersedia di API.
-- Halaman Daftar Tugas: seluruh tugas pengguna lintas mata kuliah, terurut dari `created_at` terbaru.
+## Setup pertama kali
 
-## Cara Menjalankan
+### 1. Instal dependency dan siapkan konfigurasi
 
-### 1. Backend
+```powershell
+npm --prefix backend ci
+npm --prefix frontend ci
 
-```bash
+if (!(Test-Path backend/.env)) { Copy-Item backend/.env.example backend/.env }
+if (!(Test-Path frontend/.env)) { Copy-Item frontend/.env.example frontend/.env }
+```
+
+Jika `.env` sudah ada dari versi sebelumnya, **lengkapi variabelnya** menggunakan contoh di bawah. Perintah di atas mempertahankan file yang sudah ada.
+
+Isi `backend/.env` untuk database Docker bawaan:
+
+```dotenv
+PORT=4000
+JWT_SECRET=studytrack-secret-key-change-this
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/studytrack
+CORS_ORIGIN=http://localhost:5173
+NODE_ENV=development
+```
+
+Isi `frontend/.env`:
+
+```dotenv
+VITE_API_BASE_URL=/api
+VITE_API_PROXY_TARGET=http://localhost:4000
+```
+
+`VITE_API_BASE_URL` adalah alamat API yang digunakan browser dan harus menyertakan `/api`. Pada development, nilai `/api` diteruskan oleh proxy Vite ke `VITE_API_PROXY_TARGET`. Jika port backend diubah, sesuaikan target proxy. Jangan memasukkan password database atau JWT secret ke variabel `VITE_*`, karena nilainya dapat dibaca browser.
+
+### 2. Jalankan database
+
+**Pilihan A — Docker (paling praktis):** buka Docker Desktop, tunggu sampai engine aktif, lalu:
+
+```powershell
+docker compose -f backend/compose.yaml up -d --wait
+```
+
+Database `studytrack` dibuat otomatis pada `localhost:5433` dengan user/password development `postgres`/`postgres`. Port ini berbeda dari PostgreSQL lokal yang biasanya memakai `5432`. Data bertahan di volume Docker.
+
+**Pilihan B — PostgreSQL lokal:** jika PostgreSQL sudah berjalan, buat database:
+
+```powershell
+createdb -h localhost -p 5432 -U postgres studytrack
+```
+
+Jika database sudah ada, lewati pembuatan. Ubah `DATABASE_URL` di `backend/.env` sesuai kredensial dan port lokal, misalnya `postgresql://postgres:PASSWORD_ANDA@localhost:5432/studytrack`. Karakter khusus pada username/password harus di-URL-encode. Docker tidak diperlukan untuk pilihan ini.
+
+### 3. Buat tabel dan data demo
+
+```powershell
 cd backend
-cp .env.example .env
-npm install
+npm run db:migrate
+npm run db:seed
+cd ..
+```
+
+Migrasi aman diulang. Seed bersifat opsional: membuat akun demo beserta tiga mata kuliah dan tiga tugas, lalu melewati pengisian jika akun tersebut sudah ada. Seed tidak menghapus data yang sudah tersimpan dan tidak dijalankan otomatis saat server dinyalakan.
+
+## Menjalankan aplikasi
+
+Pastikan database sudah berjalan dan migrasi sudah diterapkan.
+
+**Terminal 1 — backend**, dari folder utama proyek:
+
+```powershell
+cd backend
 npm run dev
 ```
 
-Backend berjalan di `http://localhost:4000`. Port dan `JWT_SECRET` bisa diatur lewat file `.env`.
+**Terminal 2 — frontend**, dari folder utama proyek:
 
-### 2. Frontend
-
-Buka terminal baru, lalu jalankan:
-
-```bash
+```powershell
 cd frontend
-npm install
 npm run dev
 ```
 
-Frontend berjalan di `http://localhost:5173`. Selama mode development, request `/api/*` otomatis diteruskan ke backend oleh proxy Vite.
-
-### 3. Akun Demo
-
-File `backend/db.json` dibuat otomatis saat backend pertama kali dijalankan dan langsung berisi data seed. Anda bisa masuk dengan akun berikut:
+Buka **http://localhost:5173**. Gunakan menu daftar untuk membuat akun, atau login menggunakan:
 
 | Email | Password |
 | --- | --- |
 | `demo@studytrack.test` | `demo1234` |
 
-Untuk mengembalikan data ke kondisi seed kapan pun:
+Akun demo hanya tersedia setelah menjalankan `npm run db:seed`. Tugas seed memakai deadline Juli 2026, sehingga akan tampil terlambat apabila tanggal tersebut sudah lewat. Tambahkan tugas dengan deadline beberapa jam mendatang untuk mencoba reminder mendesak.
 
-```bash
-curl -X POST http://localhost:4000/api/dev/reset
+Cek koneksi backend dan database dari terminal lain:
+
+```powershell
+Invoke-RestMethod http://localhost:4000/api/health
+# Cek jalur proxy frontend -> backend -> database:
+Invoke-RestMethod http://localhost:5173/api/health
 ```
 
-Endpoint ini hanya aktif selama `NODE_ENV` bukan `production`.
+Keduanya harus mengembalikan `status: ok` dan `database: connected`. Dashboard dan daftar tugas mengambil ulang data setiap 60 detik ketika tab terlihat, serta saat tab kembali aktif. Perubahan tugas langsung memperbarui daftar dan kategorinya dari respons API. Reminder berupa penanda dalam aplikasi; tidak ada pengiriman email atau notifikasi latar belakang.
 
-## Struktur Data
+Pada penggunaan berikutnya cukup nyalakan database, lalu jalankan backend dan frontend di dua terminal. Jalankan migrasi kembali jika ada file migrasi baru. Setelah mengubah `.env`, restart proses terkait.
 
-Struktur ini mengikuti Bagian 1 (Konteks Aplikasi) pada dokumen studi kasus. Kolom `user_id` ditambahkan di luar daftar itu supaya setiap mahasiswa hanya melihat datanya sendiri.
+Untuk berhenti, tekan `Ctrl+C` pada kedua terminal. Jika menggunakan Docker:
 
-**Mata kuliah** (`courses`)
+```powershell
+docker compose -f backend/compose.yaml down
+```
 
-| Field | Tipe | Keterangan |
+Perintah tersebut mempertahankan volume data database.
+
+## Build dan pengujian
+
+Jalankan dari folder utama proyek:
+
+```powershell
+npm --prefix backend run typecheck
+npm --prefix backend test
+npm --prefix backend run build
+npm --prefix frontend run typecheck
+npm --prefix frontend run build
+```
+
+Tes integrasi API memerlukan database development/test yang mengizinkan pembuatan schema:
+
+```powershell
+cd backend
+$env:TEST_DATABASE_URL = 'postgresql://postgres:postgres@localhost:5433/studytrack'
+npm run test:integration
+Remove-Item Env:TEST_DATABASE_URL
+cd ..
+```
+
+Tes membuat schema acak sendiri dan menghapus schema tersebut setelah selesai; tabel aplikasi tidak direset. Pengujian mencakup autentikasi, perubahan profil/password, CRUD, isolasi data pengguna, validasi input, dan batas kategori deadline.
+
+Untuk mencoba hasil build secara lokal, jalankan `npm start` dari folder `backend` dan `npm run preview` dari folder `frontend` di dua terminal. Preview tersedia pada **http://localhost:4173** dan tetap meneruskan `/api` ke target proxy. Database dan hasil migrasi tetap diperlukan.
+
+## Deployment
+
+- Backend: isi `DATABASE_URL`, `PORT`, `NODE_ENV=production`, `CORS_ORIGIN` dengan origin frontend, dan `JWT_SECRET` acak minimal 32 karakter. Kredensial Docker contoh hanya untuk development.
+- Jalankan `npm ci` dan `npm run build` dari `backend`. Sertakan folder `migrations/` bersama `dist/`, lalu jalankan `node dist/scripts/migrate.js` sebelum `npm start`. Seed demo ditolak pada production.
+- Frontend: sebelum build, isi `VITE_API_BASE_URL=https://alamat-backend-anda/api`, lalu jalankan `npm ci` dan `npm run build` dari `frontend`. Publikasikan isi `frontend/dist/` pada hosting statis dengan fallback route ke `index.html` agar `/dashboard`, `/courses`, `/tasks`, dan `/profile` dapat dibuka langsung.
+- Alternatif satu domain: pertahankan `VITE_API_BASE_URL=/api` dan atur reverse proxy hosting untuk meneruskan `/api/*` ke backend. Proxy Vite hanya bekerja pada development/preview lokal, bukan pada file statis hasil build.
+- Nilai `VITE_*` dimasukkan saat build. Setelah mengganti URL API, build dan publikasikan ulang frontend. Konfigurasi TLS database mengikuti connection URL penyedia PostgreSQL.
+
+## Pemecahan masalah
+
+| Gejala | Yang perlu diperiksa |
+| --- | --- |
+| Docker gagal terhubung ke engine | Jalankan Docker Desktop dan tunggu engine siap, lalu ulangi perintah Compose. |
+| Backend menampilkan PostgreSQL belum siap | Cek database aktif, `DATABASE_URL`, port `5433` untuk Docker atau `5432` untuk lokal, lalu jalankan migrasi. |
+| Login demo gagal | Jalankan seed pada database yang sama dengan backend; jika password pernah diubah, gunakan password terbaru. |
+| `/api` gagal atau frontend menampilkan gagal memuat | Cek health backend lalu health melalui port frontend; samakan `VITE_API_PROXY_TARGET` dengan alamat backend. |
+| CORS ketika frontend memakai URL API absolut | Set `CORS_ORIGIN` ke origin frontend yang persis sama (protokol, host, dan port), kemudian restart backend. |
+| Port `5173`/`4173` terpakai | Hentikan proses yang memakai port tersebut. Vite memakai port tetap agar alamat akses konsisten. |
+| Tugas demo seluruhnya terlambat | Deadline seed sudah lewat; tambahkan tugas baru dengan deadline mendatang. |
+
+## Struktur dan API
+
+```text
+backend/
+  server.ts, app.ts       # Server dan route Express
+  config.ts, db.ts       # Environment dan pool PostgreSQL
+  routes/                # Auth/profil, mata kuliah, tugas
+  middleware/            # JWT dan penanganan error
+  services/deadlines.ts  # Kategori dan urutan reminder
+  migrations/, scripts/  # Migrasi SQL dan seed
+  tests/                 # Unit dan integrasi API
+  compose.yaml           # PostgreSQL development
+frontend/
+  src/app/               # Entry point dan routing
+  src/features/          # Home, auth, dashboard, courses, tasks, profile
+  src/service/api.ts     # Axios, URL API, dan token JWT
+  src/shared/            # Komponen, layout, dan repository API
+  vite.config.js         # Proxy development/preview
+```
+
+Semua endpoint memakai prefix `/api`. Selain health, register, dan login, request memerlukan `Authorization: Bearer <token>`.
+
+| Method | Path | Fungsi |
 | --- | --- | --- |
-| `id` | integer | Identitas unik |
-| `name` | string | Nama mata kuliah |
-| `kode` | string | Kode mata kuliah, contoh: `CS 186` |
-| `dosen` | string | Nama dosen pengampu |
-| `user_id` | integer | Pemilik data |
+| GET | `/health` | Kesehatan server dan koneksi database |
+| POST | `/auth/register`, `/auth/login` | Autentikasi; menghasilkan `{ token, user }` |
+| GET | `/auth/me` | Profil pengguna login |
+| PATCH | `/auth/profile` | Ubah nama; menghasilkan `{ token, user }` |
+| PATCH | `/auth/password` | Ganti password dengan `{ currentPassword, newPassword }` |
+| GET, POST | `/courses` | Daftar/tambah mata kuliah |
+| PUT, DELETE | `/courses/:id` | Ubah/hapus mata kuliah |
+| GET, POST | `/tasks` | Daftar/tambah tugas |
+| GET, PUT, DELETE | `/tasks/:id` | Detail/ubah/hapus tugas |
 
-**Tugas** (`tasks`)
-
-| Field | Tipe | Keterangan |
-| --- | --- | --- |
-| `id` | integer | Identitas unik |
-| `judul` | string | Judul tugas |
-| `deskripsi` | string | Deskripsi atau catatan tambahan |
-| `deadline` | datetime | Batas pengumpulan |
-| `status` | enum | `belum` atau `selesai` |
-| `mata_kuliah_id` | integer | Referensi ke mata kuliah terkait |
-| `created_at` | datetime | Waktu tugas ditambahkan |
-| `user_id` | integer | Pemilik data |
-
-> **Format waktu.** `deadline` disimpan sebagai waktu lokal tanpa zona waktu, persis seperti keluaran input `datetime-local` (contoh: `2026-07-03T23:59`). Sementara itu `created_at` pada tugas baru berformat ISO 8601 UTC (contoh: `2026-10-23T09:00:00.000Z`). Perhatikan perbedaan ini saat Anda menghitung sisa waktu hingga deadline.
-
-## Data Seed
-
-Data awal sama dengan contoh pada dokumen studi kasus:
-
-| ID | Judul | Mata Kuliah | Deadline | Status |
-| --- | --- | --- | --- | --- |
-| 1 | Lab 4: Query Optimization Report | CS 186, Database Systems | 2026-07-03 23:59 | belum |
-| 2 | Project 3: BSTMap Implementation | CS 61B, Data Structures | 2026-07-02 10:00 | belum |
-| 3 | Sprint 2: Backend API Integration | CS 169, Software Engineering | 2026-07-06 23:59 | belum |
-
-Tanggal pada data seed mengikuti dokumen, sehingga semuanya sudah lewat dari tanggal pengerjaan Anda. Untuk mencoba fitur yang Anda buat, tambahkan tugas baru dengan deadline yang dekat lewat form **Tambah Tugas**.
-
-## Ringkasan API
-
-Semua endpoint di bawah `/api`. Endpoint bertanda "Ya" membutuhkan header `Authorization: Bearer <token>`.
-
-| Method | Path | Login | Keterangan |
-| --- | --- | --- | --- |
-| `GET` | `/health` | Tidak | Cek status server |
-| `POST` | `/auth/register` | Tidak | Daftar akun baru |
-| `POST` | `/auth/login` | Tidak | Login, mengembalikan token |
-| `GET` | `/auth/me` | Ya | Profil pengguna yang sedang login |
-| `GET` | `/courses` | Ya | Daftar mata kuliah |
-| `POST` | `/courses` | Ya | Tambah mata kuliah |
-| `PUT` | `/courses/:id` | Ya | Ubah mata kuliah |
-| `DELETE` | `/courses/:id` | Ya | Hapus mata kuliah beserta tugasnya |
-| `GET` | `/tasks` | Ya | Daftar seluruh tugas, lintas mata kuliah |
-| `GET` | `/tasks/:id` | Ya | Detail satu tugas |
-| `POST` | `/tasks` | Ya | Tambah tugas (`mata_kuliah_id`, `judul`, `deadline`, `deskripsi?`) |
-| `PUT` | `/tasks/:id` | Ya | Ubah tugas, termasuk status |
-| `DELETE` | `/tasks/:id` | Ya | Hapus tugas |
-| `POST` | `/dev/reset` | Tidak | Reset data ke seed (hanya di luar production) |
-
-## Struktur Proyek
-
-```
-studytrack-baseline/
-├── backend/
-│   ├── server.js            # Entry point Express
-│   ├── config.js            # Membaca .env (PORT, JWT_SECRET)
-│   ├── db.js                # Penyimpanan JSON file dan data seed
-│   ├── middleware/auth.js   # Verifikasi JWT
-│   └── routes/
-│       ├── auth.js          # Register, login, profil
-│       ├── courses.js       # CRUD mata kuliah
-│       └── tasks.js         # CRUD tugas (ada catatan untuk peserta)
-└── frontend/
-    └── src/
-        ├── main.jsx, App.jsx, AuthContext.jsx, api.js
-        ├── components/
-        │   ├── Navbar.jsx
-        │   └── TaskCard.jsx # Card tugas (ada catatan untuk peserta)
-        └── pages/
-            ├── Login.jsx, Register.jsx
-            ├── Courses.jsx
-            └── Tasks.jsx    # Halaman Daftar Tugas
-```
-
-## Titik Awal Fitur "Reminder Tugas Mendekati Deadline"
-
-Cari komentar bertuliskan **"CATATAN UNTUK PESERTA STUDI KASUS"** pada dua file berikut:
-
-- `backend/routes/tasks.js`
-- `frontend/src/components/TaskCard.jsx`
-
-Keduanya hanya penunjuk titik yang relevan. Anda tidak harus menaruh logika di sana, silakan sesuaikan dengan rancangan teknis Anda sendiri.
-
-## Catatan
-
-- Starter kit ini sengaja dibuat minimal. Fokus utamanya adalah fitur reminder deadline. Bonus lain pada dokumen (pemanfaatan AI/LLM, deployment, dan Git history yang rapi) bersifat opsional.
-- Anda boleh memigrasikan penyimpanan dari file JSON ke database sungguhan (SQLite, PostgreSQL, dan sebagainya), tetapi itu tidak wajib.
-- **Git history.** Salin starter kit ini ke repositori Anda sendiri dan commit kondisi awalnya lebih dulu, lalu kerjakan fitur di branch terpisah dengan commit message yang deskriptif.
-- **Deployment.** Proxy Vite hanya berlaku saat `npm run dev`, jadi frontend hasil build perlu diarahkan ke URL backend (misalnya lewat `baseURL` di `frontend/src/api.js`). Ganti juga `JWT_SECRET` dengan nilai acak dan atur `NODE_ENV=production`. Penyimpanan file di layanan gratis seperti Render atau Railway umumnya bersifat sementara, sehingga `db.json` bisa hilang saat redeploy.
+Deadline dengan zona waktu dikonversi ke UTC; input tanpa zona diasumsikan WIB oleh backend. Form frontend mengirim ISO UTC berdasarkan waktu lokal perangkat. Urutan tugas mengikuti backend: mendesak, terlambat, lalu normal; kategori normal diurutkan dari `created_at` terbaru. Detail skema, kontrak respons, dan aturan reminder tersedia di [backend/README.md](backend/README.md).
