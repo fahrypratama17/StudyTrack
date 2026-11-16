@@ -41,4 +41,33 @@ router.post("/login", asyncHandler(async (req, res) => {
 }));
 
 router.get("/me", requireAuth, (req, res) => { res.json({ user: req.user }); });
+
+router.patch("/profile", requireAuth, asyncHandler(async (req, res) => {
+  const nama = text(req.body.nama, "Nama", 100);
+  if (nama.length < 2) throw new HttpError(400, "Nama harus terdiri dari 2–100 karakter.");
+  const { rows } = await pool.query<UserProfile>(
+    "UPDATE users SET nama = $1 WHERE id = $2 RETURNING id, nama, email", [nama, req.user!.id],
+  );
+  const user = rows[0];
+  if (!user) throw new HttpError(401, "Akun tidak ditemukan. Silakan login kembali.");
+  res.json({ token: signToken(user), user });
+}));
+
+router.patch("/password", requireAuth, asyncHandler(async (req, res) => {
+  const currentPassword = validatePassword(req.body.currentPassword);
+  const newPassword = validatePassword(req.body.newPassword);
+  if (newPassword === currentPassword) throw new HttpError(400, "Password baru harus berbeda dari password lama.");
+  const { rows } = await pool.query<User>("SELECT * FROM users WHERE id = $1", [req.user!.id]);
+  const user = rows[0];
+  if (!user || !(await bcrypt.compare(currentPassword, user.password_hash))) {
+    throw new HttpError(400, "Password lama tidak sesuai.");
+  }
+  const hash = await bcrypt.hash(newPassword, 10);
+  const { rowCount } = await pool.query(
+    "UPDATE users SET password_hash = $1 WHERE id = $2 AND password_hash = $3",
+    [hash, user.id, user.password_hash],
+  );
+  if (!rowCount) throw new HttpError(409, "Password telah berubah. Silakan coba lagi.");
+  res.json({ success: true });
+}));
 export default router;

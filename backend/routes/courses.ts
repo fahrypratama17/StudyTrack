@@ -1,92 +1,45 @@
 import { Router } from "express";
-import type { Course, CourseBody } from "../types.js";
-import { readDB, writeDB } from "../db.js";
+import { pool } from "../db.js";
 import { requireAuth } from "../middleware/auth.js";
+import { asyncHandler, HttpError } from "../middleware/errors.js";
+import { positiveId, text } from "../validation.js";
+import type { Course } from "../types.js";
 
 const router = Router();
-
-// Seluruh endpoint mata kuliah membutuhkan login.
 router.use(requireAuth);
 
-/**
- * GET /api/courses
- * Daftar mata kuliah milik pengguna yang sedang login.
- *
- * Response : 200 { courses }
- */
-router.get("/", (req, res) => {
-  const db = readDB();
-  const courses = db.courses.filter((c) => c.user_id === req.user!.id);
-  res.json({ courses });
-});
+router.get("/", asyncHandler(async (req, res) => {
+  const { rows } = await pool.query<Course>("SELECT * FROM courses WHERE user_id = $1 ORDER BY id", [req.user!.id]);
+  res.json({ courses: rows });
+}));
 
-/**
- * POST /api/courses
- * Menambahkan mata kuliah baru.
- *
- * Body     : { name, kode?, dosen? }
- * Response : 201 { course } | 400 name kosong
- */
-router.post<{}, unknown, CourseBody>("/", (req, res) => {
-  const { name, kode, dosen } = req.body;
-  if (!name) {
-    return res.status(400).json({ error: "Nama mata kuliah wajib diisi." });
-  }
+router.post("/", asyncHandler(async (req, res) => {
+  const name = text(req.body.name, "Nama mata kuliah", 200);
+  const kode = req.body.kode === undefined ? "" : text(req.body.kode, "Kode", 50, true);
+  const dosen = req.body.dosen === undefined ? "" : text(req.body.dosen, "Dosen", 200, true);
+  const { rows } = await pool.query<Course>(
+    "INSERT INTO courses (user_id, name, kode, dosen) VALUES ($1, $2, $3, $4) RETURNING *",
+    [req.user!.id, name, kode, dosen],
+  );
+  res.status(201).json({ course: rows[0] });
+}));
 
-  const db = readDB();
-  const newCourse: Course = {
-    id: db.nextIds.course++,
-    user_id: req.user!.id,
-    name,
-    kode: kode || "",
-    dosen: dosen || ""
-  };
-  db.courses.push(newCourse);
-  writeDB(db);
-  res.status(201).json({ course: newCourse });
-});
+router.put("/:id", asyncHandler(async (req, res) => {
+  const id = positiveId(req.params.id);
+  const name = req.body.name === undefined ? null : text(req.body.name, "Nama mata kuliah", 200);
+  const kode = req.body.kode === undefined ? null : text(req.body.kode, "Kode", 50, true);
+  const dosen = req.body.dosen === undefined ? null : text(req.body.dosen, "Dosen", 200, true);
+  const { rows } = await pool.query<Course>(
+    `UPDATE courses SET name = COALESCE($3, name), kode = COALESCE($4, kode), dosen = COALESCE($5, dosen)
+     WHERE id = $1 AND user_id = $2 RETURNING *`, [id, req.user!.id, name, kode, dosen],
+  );
+  if (!rows[0]) throw new HttpError(404, "Mata kuliah tidak ditemukan.");
+  res.json({ course: rows[0] });
+}));
 
-/**
- * PUT /api/courses/:id
- * Memperbarui mata kuliah. Hanya field yang dikirim yang diubah.
- *
- * Body     : { name?, kode?, dosen? }
- * Response : 200 { course } | 404 tidak ditemukan
- */
-router.put<{ id: string }, unknown, CourseBody>("/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const db = readDB();
-  const course = db.courses.find((c) => c.id === id && c.user_id === req.user!.id);
-  if (!course) {
-    return res.status(404).json({ error: "Mata kuliah tidak ditemukan." });
-  }
-
-  const { name, kode, dosen } = req.body;
-  if (name !== undefined) course.name = name;
-  if (kode !== undefined) course.kode = kode;
-  if (dosen !== undefined) course.dosen = dosen;
-  writeDB(db);
-  res.json({ course });
-});
-
-/**
- * DELETE /api/courses/:id
- * Menghapus mata kuliah beserta seluruh tugas di dalamnya.
- *
- * Response : 200 { success: true } | 404 tidak ditemukan
- */
-router.delete("/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const db = readDB();
-  const course = db.courses.find((c) => c.id === id && c.user_id === req.user!.id);
-  if (!course) {
-    return res.status(404).json({ error: "Mata kuliah tidak ditemukan." });
-  }
-
-  db.courses = db.courses.filter((c) => c.id !== id);
-  db.tasks = db.tasks.filter((t) => t.mata_kuliah_id !== id);
-  writeDB(db);
+router.delete("/:id", asyncHandler(async (req, res) => {
+  const { rowCount } = await pool.query("DELETE FROM courses WHERE id = $1 AND user_id = $2", [positiveId(req.params.id), req.user!.id]);
+  if (!rowCount) throw new HttpError(404, "Mata kuliah tidak ditemukan.");
   res.json({ success: true });
-});
-
+}));
 export default router;

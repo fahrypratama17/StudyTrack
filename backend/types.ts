@@ -29,11 +29,12 @@ export interface Task {
   created_at: string;
 }
 
-export interface Database {
-  nextIds: { user: number; course: number; task: number };
-  users: User[];
-  courses: Course[];
-  tasks: Task[];
+export type DeadlineCategory = "mendekati_deadline" | "overdue" | "normal";
+
+export interface TaskResponse extends Task {
+  mata_kuliah: string;
+  deadline_category: DeadlineCategory;
+  remaining_seconds: number;
 }
 
 export interface RegisterBody {
