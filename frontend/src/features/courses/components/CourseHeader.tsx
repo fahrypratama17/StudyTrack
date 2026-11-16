@@ -1,9 +1,5 @@
 import { Plus } from "lucide-react";
-import { useCoursePage } from "../hooks/useCoursePage";
-
-const CourseHeader = () => {
-  const { openAddForm } = useCoursePage();
-
+const CourseHeader = ({ openAddForm }: { openAddForm: () => void }) => {
   return (
     <header className="flex flex-wrap items-center justify-between gap-4">
       <div>

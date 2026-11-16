@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { TOKEN_KEY } from "../../../service/api";
+import { AUTH_EXPIRED_EVENT, TOKEN_KEY } from "../../../service/api";
 import type { AuthContextType, AuthProviderProps, User } from "../types/type";
 import { getCurrentUser } from "../../../shared/repository/auth/query";
 import {
@@ -15,6 +15,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     let cancelled = false;
+    const onExpired = () => setUser(null);
+    window.addEventListener(AUTH_EXPIRED_EVENT, onExpired);
 
     async function initializeAuth(): Promise<void> {
       const token = localStorage.getItem(TOKEN_KEY);
@@ -46,6 +48,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     return () => {
       cancelled = true;
+      window.removeEventListener(AUTH_EXPIRED_EVENT, onExpired);
     };
   }, []);
 
