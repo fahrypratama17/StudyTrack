@@ -6,7 +6,6 @@ export class HttpError extends Error {
   }
 }
 
-// Express 4 tidak meneruskan rejection dari handler async secara otomatis.
 export const asyncHandler = (handler: RequestHandler): RequestHandler => (req, res, next) => {
   Promise.resolve().then(() => handler(req, res, next)).catch(next);
 };

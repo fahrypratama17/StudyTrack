@@ -10,7 +10,6 @@ type JoinedTask = Task & { mata_kuliah: string };
 const SELECT_TASKS = `SELECT t.*, c.name AS mata_kuliah FROM tasks t
   JOIN courses c ON c.id = t.mata_kuliah_id AND c.user_id = t.user_id`;
 
-// Clock dapat disuntikkan oleh tes; endpoint publik selalu memakai waktu server.
 export function createTaskRouter(clock: () => Date = () => new Date()): Router {
   const router = Router();
   router.use(requireAuth);
